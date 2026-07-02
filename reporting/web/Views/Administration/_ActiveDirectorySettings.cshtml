@@ -40,14 +40,6 @@
 }
 @section scripts{
     <script nonce="@Context.Items["ScriptNonce"]">
-        serverApp.controller("adSettingsController", ["$scope", function ($scope) {
-            $scope.regex = '^(?!(ftp|https?):\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-]+(\.[a-z]{2,6})?(:\d{1,5})?(\/[a-zA-Z0-9]+[a-zA-Z0-9]*(\.[a-z]{2,8})?)*?$';
-            $scope.distinguishedNameRegex = /^(\w+[=]{1}[a-zA-Z0-9-_\s]+)([\,{1}]\w+[=]{1}[a-zA-Z0-9-_\s]+)*$/;
-        }]);
-
-    </script>
-    <script nonce="@Context.Items["ScriptNonce"]">
-        var itemInfoCtrl = angular.element('[ng-controller=adSettingsController]').scope();
         var defaultAuthentication = "";
         var updateAdSettingsUrl = "@Url.Action("UpdateActiveDirectorySettings", "Administration")";
         var adTestconnectionUrl = "@Url.Action("activedirectorytestconnection", "Administration")";
@@ -158,7 +150,7 @@
 
 @section MainSection{
     @await Html.PartialAsync("_AdminMenu")
-    <div id="active-directory-container" role="tabpanel" class="col-12 admin-page-container @(ViewBag.ThirdPartyLogins ? string.Empty : "unlock-enterprise-features blur-content")" aria-labelledby="active-directory-settings-link" ng-controller="adSettingsController">
+    <div id="active-directory-container" role="tabpanel" class="col-12 admin-page-container @(ViewBag.ThirdPartyLogins ? string.Empty : "unlock-enterprise-features blur-content")" aria-labelledby="active-directory-settings-link">
 
         <div class="col-md-12 import-area admin-page-header">
             <div class="d-flex justify-content-between align-items-start flex-wrap">
@@ -228,41 +220,41 @@
                                 <div class="col-md-6 no-padding no-margin">
                                     @Html.Label("username", "[[[Username]]]", new { @class = "app-textbox-label col-md-4 no-margin" })
 
-                                    <div class="col-md-8 no-margin form-input-field float-end" ng-class="(windowsAdSettingsForm.userName.$dirty && windowsAdSettingsForm.userName.$invalid) ? 'has-error' : ''">
-                                        <input type="text" class="form-control col-md-6 no-margin" name="userName" placeholder="[[[Username]]]" id="username" ng-model="windowsAduserName" ng-init="windowsAduserName='@activeDirectoryUserName'" required />
-                                        <span class="validation-message" ng-show="windowsAdSettingsForm.userName.$dirty && windowsAdSettingsForm.userName.$invalid">[[[Please enter username]]]</span>
+                                    <div class="col-md-8 no-margin form-input-field float-end">
+                                        <input type="text" class="form-control col-md-6 no-margin" name="userName" placeholder="[[[Username]]]" id="username" value="@activeDirectoryUserName" required />
+                                        <span class="validation-message" style="display:none">[[[Please enter username]]]</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="col-md-6 no-padding no-margin">
                                     @Html.Label("password", "[[[Password]]]", new { @class = "app-textbox-label col-md-4 no-margin" })
-                                    <div class="col-md-8 no-margin form-input-field float-end" ng-class="(windowsAdSettingsForm.passWord.$dirty && windowsAdSettingsForm.passWord.$invalid) ? 'has-error' : ''">
+                                    <div class="col-md-8 no-margin form-input-field float-end">
                                         <input type="text" style="display: none;">
                                         <input style="visibility: hidden; position: absolute; left: -99999px" type="password" name="fake_passwordfield_to_turnoff_autocomplete">
-                                        <input type="password" class="form-control col-md-6 no-margin" value="" name="passWord" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="password" ng-model="passWord" required />
+                                        <input type="password" class="form-control col-md-6 no-margin" value="" name="passWord" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="password" required />
                                         <div class="show-hide-password su su-eye"></div>
-                                        <span class="validation-message" ng-show="windowsAdSettingsForm.passWord.$dirty && windowsAdSettingsForm.passWord.$invalid">[[[Please enter password]]]</span>
+                                        <span class="validation-message" style="display:none">[[[Please enter password]]]</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="col-md-6 no-padding no-margin">
                                     @Html.Label("ldapurl", "[[[LDAP URL]]](LDAP://)", new { @class = "app-textbox-label col-md-4 no-margin" })
-                                    <div class="col-md-8 no-margin form-input-field float-end" ng-class="(windowsAdSettingsForm.ldapUrl.$dirty && windowsAdSettingsForm.ldapUrl.$invalid) ? 'has-error' : ''">
-                                        <input type="text" class="form-control col-md-6 no-margin" name="ldapUrl" placeholder="[[[LDAP URL]]]" id="ldapurl" ng-model="windowsLdapUrl" ng-init="windowsLdapUrl='@ldapUrl'" ng-pattern="@ldapRegEx" required />
-                                        <span class="validation-message" ng-show="windowsAdSettingsForm.ldapUrl.$error.required && windowsAdSettingsForm.ldapUrl.$dirty ">[[[Please enter LDAP URL]]]</span>
-                                        <span class="validation-message" ng-show="windowsAdSettingsForm.ldapUrl.$error.pattern ">[[[Invalid LDAP URL]]]</span>
+                                    <div class="col-md-8 no-margin form-input-field float-end">
+                                        <input type="text" class="form-control col-md-6 no-margin" name="ldapUrl" placeholder="[[[LDAP URL]]]" id="ldapurl" value="@ldapUrl" required />
+                                        <span class="validation-message" style="display:none">[[[Please enter LDAP URL]]]</span>
+                                        <span class="validation-message" style="display:none">[[[Invalid LDAP URL]]]</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="col-md-6 no-padding no-margin">
                                     @Html.Label("distinguished-name", "[[[Distinguished Name]]]", new { @class = "app-textbox-label col-md-4 no-margin" })
-                                    <div class="col-md-8 no-margin form-input-field float-end" ng-class="(windowsAdSettingsForm.distinguishedName.$dirty && windowsAdSettingsForm.distinguishedName.$invalid) ? 'has-error' : ''">
-                                        <input type="text" class="form-control col-md-6 no-margin" name="distinguishedName" placeholder="[[[DC=example,DC=com]]]" id="distinguished-name" ng-model="windowsDistinguishedName" ng-init="windowsDistinguishedName='@distinguishedName'" ng-pattern="distinguishedNameRegex" required />
-                                        <span class="validation-message" ng-show="windowsAdSettingsForm.distinguishedName.$error.required && windowsAdSettingsForm.distinguishedName.$dirty ">[[[Please enter Distinguished Name]]]</span>
-                                        <span class="validation-message" ng-show="windowsAdSettingsForm.distinguishedName.$error.pattern ">[[[Invalid Distinguished Name]]]</span>
+                                    <div class="col-md-8 no-margin form-input-field float-end">
+                                        <input type="text" class="form-control col-md-6 no-margin" name="distinguishedName" placeholder="[[[DC=example,DC=com]]]" id="distinguished-name" value="@distinguishedName" required />
+                                        <span class="validation-message" style="display:none">[[[Please enter Distinguished Name]]]</span>
+                                        <span class="validation-message" style="display:none">[[[Invalid Distinguished Name]]]</span>
                                     </div>
                                 </div>
                             </div>
@@ -283,10 +275,10 @@
                                 <div class="col-md-6 no-padding no-margin">
                                     @Html.Label("ldap-port-number", "[[[Port Number]]]", new { @class = "app-textbox-label col-md-4 no-margin" })
 
-                                    <div class="col-md-8 no-margin form-input-field float-end" ng-class="(windowsAdSettingsForm.portNo.$dirty && windowsAdSettingsForm.portNo.$invalid) ? 'has-error' : ''">
-                                        <input type="text" class="form-control col-md-6 no-margin" name="portNo" placeholder="[[[Port Number]]]" id="ldap-port-number" ng-model="windowsPortNo" ng-init="windowsPortNo='@ViewBag.SystemSettings.PortNo'" required />
+                                    <div class="col-md-8 no-margin form-input-field float-end">
+                                        <input type="text" class="form-control col-md-6 no-margin" name="portNo" placeholder="[[[Port Number]]]" id="ldap-port-number" value="@ViewBag.SystemSettings.PortNo" required />
                                         <span class="port-number-info">(Default: SSL: 636, Non-SSL: 389)</span>
-                                        <span class="validation-message" ng-show="windowsAdSettingsForm.portNo.$dirty && windowsAdSettingsForm.portNo.$invalid">[[[Please enter Port Number]]]</span>
+                                        <span class="validation-message" style="display:none">[[[Please enter Port Number]]]</span>
                                     </div>
                                 </div>
                             </div>
@@ -294,7 +286,7 @@
                                 <div class="col-md-6 error-message" style="display: none; float:right"></div>
                                 <div class="col-md-6 success-message" style="display: none; float:right;"></div>
                                 <div class="col-md-6 no-margin no-padding">
-                                    <input type="button" id="test-windows-ad-connection" class="primary-button app-btn-primary float-end test-connection" data-bs-toggle="tooltip" data-bs-placement="top" data-container="body" title="[[[Test Active Directory Connection]]]" value="[[[Test Connection]]]" ng-disabled="windowsAdSettingsForm.$invalid" />
+                                    <input type="button" id="test-windows-ad-connection" class="primary-button app-btn-primary float-end test-connection" data-bs-toggle="tooltip" data-bs-placement="top" data-container="body" title="[[[Test Active Directory Connection]]]" value="[[[Test Connection]]]" disabled />
                                 </div>
                             </div>
                         </form>
@@ -307,34 +299,34 @@
                             <div class="col-md-12 form-group">
                                 <div class="col-md-6 no-padding no-margin">
                                     <label class="app-textbox-label col-md-4 no-margin">[[[Tenant Name]]]</label>
-                                    <div class="col-md-8 no-margin form-input-field float-end" ng-class="(azureAdSettingsForm.tenantName.$dirty && azureAdSettingsForm.tenantName.$invalid) ? 'has-error' : ''">
-                                        <input type="text" class="form-control col-md-6 no-margin" ng-model="azureTenantName" ng-init="azureTenantName='@ViewBag.AzureADSetting.TenantName'" name="tenantName" placeholder="example.onmicrosoft.com" id="tenantName" ng-pattern="regex" required />
-                                        <span class="validation-message" ng-show="azureAdSettingsForm.tenantName.$error.required && azureAdSettingsForm.tenantName.$dirty ">[[[Please enter tenant name]]]</span>
-                                        <span class="validation-message" ng-show="azureAdSettingsForm.tenantName.$error.pattern ">[[[Please enter valid URL]]]</span>
+                                    <div class="col-md-8 no-margin form-input-field float-end">
+                                        <input type="text" class="form-control col-md-6 no-margin" name="tenantName" placeholder="example.onmicrosoft.com" id="tenantName" value="@ViewBag.AzureADSetting.TenantName" required />
+                                        <span class="validation-message" style="display:none">[[[Please enter tenant name]]]</span>
+                                        <span class="validation-message" style="display:none">[[[Please enter valid URL]]]</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="col-md-6 no-padding no-margin">
                                     <label class="app-textbox-label col-md-4 no-margin">[[[Client Id]]]</label>
-                                    <div class="col-md-8 no-margin form-input-field float-end secrets-field" ng-class="(azureAdSettingsForm.clientId.$dirty && azureAdSettingsForm.clientId.$invalid) ? 'has-error' : ''">
+                                    <div class="col-md-8 no-margin form-input-field float-end secrets-field">
                                         <input type="text" class="hidden-input" style="display: none;">
                                         <input style="visibility: hidden; position: absolute; left: -99999px" class="hidden-input" type="password" name="fake_passwordfield_to_turnoff_autocomplete">
-                                        <input type="password" class="form-control col-md-6 no-margin" ng-model="azureClientId" name="clientId" ng-init="azureClientId='@ViewBag.AzureADSetting.ClientId'" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="clientId" required />
+                                        <input type="password" class="form-control col-md-6 no-margin" name="clientId" value="@ViewBag.AzureADSetting.ClientId" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="clientId" required />
                                         <div class="show-hide-password su su-eye"></div>
-                                        <span class="validation-message" ng-show="azureAdSettingsForm.clientId.$dirty && azureAdSettingsForm.clientId.$invalid">[[[Please enter client id]]]</span>
+                                        <span class="validation-message" style="display:none">[[[Please enter client id]]]</span>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-12 form-group">
                                 <div class="col-md-6 no-padding no-margin">
                                     <label class="app-textbox-label col-md-4 no-margin">[[[Client Secret Code]]]</label>
-                                    <div class="col-md-8 no-margin form-input-field float-end" ng-class="(azureAdSettingsForm.clientKey.$dirty && azureAdSettingsForm.clientKey.$invalid) ? 'has-error' : ''">
+                                    <div class="col-md-8 no-margin form-input-field float-end">
                                         <input type="text" style="display: none;">
                                         <input style="visibility: hidden; position: absolute; left: -99999px" type="password" name="fake_passwordfield_to_turnoff_autocomplete">
-                                        <input type="password" class="form-control col-md-6 no-margin" value="" ng-model="azureClientKey" name="clientKey" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="clientKey" required />
+                                        <input type="password" class="form-control col-md-6 no-margin" value="" name="clientKey" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="clientKey" required />
                                         <div class="show-hide-password su su-eye"></div>
-                                        <span class="validation-message" ng-show="azureAdSettingsForm.clientKey.$dirty && azureAdSettingsForm.clientKey.$invalid">[[[Please enter client key]]]</span>
+                                        <span class="validation-message" style="display:none">[[[Please enter client key]]]</span>
                                     </div>
                                 </div>
                             </div>
@@ -359,7 +351,7 @@
                                     <div class="col-md-6 error-message" style="display: none; float:right;"></div>
                                     <div class="col-md-6 success-message" style="display: none; float:right;"></div>
                                     <div class="col-md-6 no-padding no-margin">
-                                        <input type="button" id="testAzureConnection" ng-disabled="azureAdSettingsForm.$invalid" class="primary-button app-btn-primary test-connection float-end" title="[[[Test Azure Active Directory Connection]]]" value="[[[Test Connection]]]" />
+                                        <input type="button" id="testAzureConnection" class="primary-button app-btn-primary test-connection float-end" title="[[[Test Azure Active Directory Connection]]]" value="[[[Test Connection]]]" disabled />
                                     </div>
                                 </div>
                             }
@@ -638,9 +630,9 @@
                 <a href="@Url.Action("Index","Home")" class="secondary-button app-btn-secondary float-end" id="cancel-active-dir-settings" title="">[[[Cancel]]]</a>
                 @if (!isAzureApplication && enableWindowsAD)
                 {
-                    <button type="button" title="" id="update-active-dir-settings" name="UpdateSystemSettings" class="primary-button app-btn-primary float-end update-system-settings  @(!ServerAppConfig.IsSelfHosted ? " d-none" : string.Empty)" ng-disabled="windowsAdSettingsForm.$invalid" ng-click="">[[[Save]]]</button>
+                    <button type="button" title="" id="update-active-dir-settings" name="UpdateSystemSettings" class="primary-button app-btn-primary float-end update-system-settings  @(!ServerAppConfig.IsSelfHosted ? " d-none" : string.Empty)" disabled>[[[Save]]]</button>
                 }
-                <button type="button" title="" id="UpdateAzureADSettings-bottom" name="UpdateSystemSettings" class="primary-button app-btn-primary float-end @(ServerAppConfig.IsSelfHosted ? " d-none" : string.Empty)" ng-disabled="azureAdSettingsForm.$invalid" ng-click="" style="display:none">[[[Save]]]</button>
+                <button type="button" title="" id="UpdateAzureADSettings-bottom" name="UpdateSystemSettings" class="primary-button app-btn-primary float-end @(ServerAppConfig.IsSelfHosted ? " d-none" : string.Empty)" disabled style="display:none">[[[Save]]]</button>
                 <button type="button" title="" id="save-db-settings" disabled="disabled" name="UpdateSystemSettings" class="primary-button app-btn-primary float-end" style="display:none">[[[Save]]]</button>
                 <button type="button" id="connect-database" class="primary-button app-btn-primary float-end connect-database-button" disabled="disabled" style="display:none">[[[Next]]]</button>
                 <button type="button" id="change-connection" class="primary-button app-btn-primary  float-end" style="display:none">[[[Back]]]</button>

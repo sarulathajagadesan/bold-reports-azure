@@ -546,10 +546,9 @@
         });
 
         dataManager.executeQuery(ej.Query()).done(function () {
-            scope = angular.element('[ng-controller=DashboardCtrl]').scope();
             if (recentItemsList) {
-                scope.$applyAsync(function () {
-                    scope.recentItems = recentItemsList;
+                state.$applyAsync(function () {
+                    state.recentItems = recentItemsList;
                 });
             }
         });
@@ -621,10 +620,13 @@
 
     function setGrid(filters) {
         var reportGrid = $("#items").data("ejGrid");
-        dashboardGrid = angular.element('[ng-controller=DashboardCtrl]').scope();
+        dashboardGrid = getDashboardScope();
         filter = filters;
-        if (reportGrid != undefined)
+
+        if (reportGrid !== undefined) {
             reportGrid.destroy();
+        }
+
         initializeGrid();
     };
     $(document).on("show.bs.tooltip", function () {

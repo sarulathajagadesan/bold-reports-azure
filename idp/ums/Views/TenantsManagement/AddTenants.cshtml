@@ -49,8 +49,8 @@
         siteDomain = reportUrl.Authority;
         siteProtocol = reportUrl.Scheme;
         var basePath = reportUrl != null
-                               ? (await GlobalAppSettings.GetSubApps(Context)).SubAppUrl?.TrimEnd('/')
-                               : string.Empty;
+                              ? (await GlobalAppSettings.GetSubApps(Context)).SubAppUrl?.TrimEnd('/')
+                              : string.Empty;
         boldReportPath = $"{basePath}/reporting";
         siteDefaultText = @boldReportPath + "/" + @CloudAppConfig.TenantIdentifierPrefix + "/";
     }

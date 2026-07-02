@@ -7,14 +7,10 @@
                     @Html.Label("enable-defaultauthentication", "[[[Enable Default Authentication]]]", new { @class = "app-textbox-label col-md-4 no-margin" })
                     <div class="col-md-8 form-input-field switch-align float-end">
                         <span class="material-switch text-left">
-                            @if ((bool)ViewBag.OpenIDSettings.IsDefaultAuthentication || (bool)ViewBag.OAuthSettings.IsDefaultAuthentication || (bool)ViewBag.JwtSettings.IsDefaultAuthentication)
-                            {
-                                <input type="checkbox" id="enable-defaultauthentication" name="defaultauthenticationIsEnabled" ng-model="defaultauthenticationIsEnabled" ng-init="defaultauthenticationIsEnabled=true" ng-click="hideValidationMessage(defaultauthenticationIsEnabled, 'defaultauthentication')" ng-checked=true />
+                            @{
+                                var isDefaultAuthEnabled = (bool)ViewBag.OpenIDSettings.IsDefaultAuthentication || (bool)ViewBag.OAuthSettings.IsDefaultAuthentication || (bool)ViewBag.JwtSettings.IsDefaultAuthentication;
                             }
-                            else
-                            {
-                                <input type="checkbox" id="enable-defaultauthentication" name="defaultauthenticationIsEnabled" ng-model="defaultauthenticationIsEnabled" ng-init="defaultauthenticationIsEnabled=false" ng-click="hideValidationMessage(defaultauthenticationIsEnabled, 'defaultauthentication')" />
-                            }
+                            <input type="checkbox" id="enable-defaultauthentication" name="defaultauthenticationIsEnabled" @(isDefaultAuthEnabled ? "checked" : "") />
                             <label for="enable-defaultauthentication" class="label-primary"></label>
                         </span>
                     </div>
@@ -24,14 +20,14 @@
                 <div class="col-md-6 no-padding no-margin">
                     <label class="app-textbox-label col-md-4 no-margin">[[[Default Authentication Provider ]]]</label>
                     <div class="col-md-8 no-margin form-input-field float-end">
-                        <select id="login-provider-type" class="selectpicker method-type provider-list">
+                        <select id="login-provider-type" class="selectpicker method-type provider-list" name="loginProvider">
                             @if (!(bool)ViewBag.OpenIDSettings.IsDefaultAuthentication && !(bool)ViewBag.OAuthSettings.IsDefaultAuthentication)
                             {
-                                <option class="no-margin-dropdown-ul" id="none-default">[[[None]]]</option>
+                                <option class="no-margin-dropdown-ul" id="none-default" selected>[[[None]]]</option>
                             }
                             @if ((bool)ViewBag.OAuthSettings.IsDefaultAuthentication)
                             {
-                                <option class="no-margin-dropdown-ul">[[[OAuth 2.0]]]</option>
+                                <option class="no-margin-dropdown-ul" selected>[[[OAuth 2.0]]]</option>
                             }
                             @if ((bool)ViewBag.OpenIDSettings.IsEnabled)
                             {
@@ -46,10 +42,30 @@
                                 <option class="no-margin-dropdown-ul">JWT</option>
                             }
                         </select>
-                        <span class="validation-message" ng-show="defaultsettingsForm.loginProvider.$error.required && defaultsettingsForm.loginProvider.$dirty && enable-defaultauthentication">[[[Please Select the Login Provider.]]]</span>
+                        <span class="validation-message d-none" id="login-provider-validation">[[[Please Select the Login Provider.]]]</span>
                     </div>
                 </div>
             </div>
         </form>
+        <script type="text/javascript">
+            $(document).ready(function () {
+                var saveButton = $('#update-defaultauthlogin-settings');
+                var defaultAuthCheckbox = $('#enable-defaultauthentication');
+
+                function toggleSaveButton() {
+                    if (defaultAuthCheckbox.is(':checked')) {
+                        saveButton.removeAttr('disabled');
+                    } else {
+                        saveButton.attr('disabled', 'disabled');
+                    }
+                }
+
+                toggleSaveButton();
+
+                defaultAuthCheckbox.on('change', function () {
+                    toggleSaveButton();
+                });
+            });
+        </script>
     </div>
 </div>

@@ -11,6 +11,31 @@ var skeletonCard;
 var onScroll= true;
 var innerCard;
 var fetchCard= false;
+
+function getSafeImageFallbackUrl(url) {
+    if (typeof url === "string" && url.trim() !== "" && url !== "undefined") {
+        return url;
+    }
+
+    return "";
+}
+
+function applySafeImageFallback(image, fallbackUrl, fallbackAlt) {
+    if (!image) {
+        return;
+    }
+
+    var safeFallbackUrl = getSafeImageFallbackUrl(fallbackUrl);
+    if (safeFallbackUrl && image.src !== safeFallbackUrl) {
+        image.src = safeFallbackUrl;
+        image.alt = fallbackAlt;
+        return;
+    }
+
+    image.removeAttribute("src");
+    image.alt = fallbackAlt;
+}
+
 $(document).ready(function () {
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
@@ -585,8 +610,7 @@ function loadTenantCards(baseUrl, skip, take) {
 
                 document.querySelectorAll('.icon-logo').forEach(function(img) {
                     img.addEventListener('error', function() {
-                        this.src = brokenImageForTiles;
-                        this.alt = "Broken Logo";
+                        applySafeImageFallback(this, window.brokenImageForTiles, "Broken Logo");
                     });
                 });
             }
@@ -648,8 +672,7 @@ function loadFavoriteCards(baseUrl, skip, take) {
 
                 document.querySelectorAll('.icon-logo').forEach(function(img) {
                     img.addEventListener('error', function() {
-                        this.src = brokenImageForTiles;
-                        this.alt = "Broken Logo";
+                        applySafeImageFallback(this, window.brokenImageForTiles, "Broken Logo");
                     });
                 });
             }
@@ -845,7 +868,7 @@ $(document).on("click", ".search-favorite", function () {
 
 function handleLogoError() {
     $('#boldbi-logo').on("error", function () {
-        $(this).attr("src", defaultErrorImageSrc);
+        applySafeImageFallback(this, window.defaultErrorImageSrc, "Broken Logo");
     });
 }
 

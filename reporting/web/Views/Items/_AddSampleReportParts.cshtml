@@ -19,23 +19,24 @@
     </script>
 
     <environment include="Development,CloudDevelopment">
-        <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/theme/light.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/theme/light.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/addsamplereportparts.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/addsamplereportparts.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, reportServerResourceUrl)" />
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/addsamplereportpart.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/addsamplereportpart.js")" crossorigin="anonymous"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
-        <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/theme/light.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/theme/light.min.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/addsamplereportparts.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/addsamplereportparts.min.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, reportServerResourceUrl)" />
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/addsamplereportpart.min.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/addsamplereportpart.min.js")" crossorigin="anonymous"></script>
     </environment>
 
     @await Html.PartialAsync("~/Views/Shared/_LoaderIcon.cshtml")
+    @await Html.PartialAsync("../Shared/_ApplicationThemeStyleSheet.cshtml")
+    @await Html.PartialAsync("../Shared/_BaseThemeStyleSheet.cshtml")
+    @await Html.PartialAsync("../Shared/_BaseFontStyleSheet.cshtml")
 </head>
 <body class="overflow-none sample-report-part-popup" id="sample-report-part-container">
     <div class="modal no-padding" tabindex="-1" role="dialog">
-        <div class="modal-dialog col-lg-12 popup-header no-padding" id="samples" ng-app="samples" ng-controller="SampleReportPartCtrl" role="document">
+        <div class="modal-dialog col-lg-12 popup-header no-padding" id="samples" role="document">
 
             <div class="modal-content col-lg-12" id="popup-container" data-spy="scroll">
 
@@ -52,26 +53,16 @@
                         <div class="col-12 sample-item">
 
                             <div id="search-area" class="float-end">
-                                <input type="text" id="search-items" class="float-start no-margin" ng-model="query" placeholder="[[[Search]]]" />
-                                <span class="su close-icon su-inner-close float-end no-margin clear-search" ng-click="query = ''" id="clear-search" title="[[[Clear search]]]"></span>
+                                <input type="text" id="search-items" class="float-start no-margin" placeholder="[[[Search]]]" />
+                                <span class="su close-icon su-inner-close float-end no-margin clear-search" id="clear-search" title="[[[Clear search]]]"></span>
                                 <span class="su su-search search-item float-end no-margin" title="[[[Search]]]"></span>
                             </div>
                             <div class="col-12 sample-report-part">
-                                <div class="col-12 search-found ng-hide" id="search-count" ng-show="countFilterObjects(samples, query) >= 1">
-                                    <span class="dashboard-count">{{countFilterObjects(samples, query)}} {{"[[[Result(s) found for]]]"}} "{{query}}"</span>
+                                <div class="col-12 search-found" id="search-count-container" style="display:none">
+                                    <span class="dashboard-count" id="search-count-text"></span>
                                 </div>
-                                <div class="col-12 no-padding" ng-repeat="reportPart in filteredSamples =(samples | filter:query)">
-                                        <div class="col-3 sample-image">
-                                            <img ng-src="@reportServerResourceUrl/cdn/css/sample_items/{{reportPart.ImageName | lowercase}}" />
-                                        </div>
-                                        <div class="col-9 sample-content">
-                                            <div class="sample-name">{{reportPart.Name}}</div>
-                                            <div class="sample-description">{{reportPart.Description}}</div>
-                                            <input type="button" class="sample-add-button primary-button app-btn-primary" data-sample-filename="{{reportPart.FileName}}" data-sample-description="{{reportPart.Description}}" data-sample-name="{{reportPart.Name}}" data-sample-reportpart-type="{{reportPart.ReportPartType}}" value="[[[Add Report Part]]]" />
-                                        </div>
-                                        <hr class="col-12 sample-separator" />
-                                </div>
-                                <div class="dashboard-empty-message-div col-12 ng-hide" ng-show="countFilterObjects(samples, query) == 0">
+                                <div class="col-12 no-padding" id="sample-reportpart-list"></div>
+                                <div class="dashboard-empty-message-div col-12" id="sample-empty-state" style="display:none">
                                     <div class="empty-dashboard-image-div">
                                         <img class="empty-dashboard-image" src="@reportServerResourceUrl/cdn/css/images/dashboard-empty-state-60x60.svg" alt="" style="margin: 0 auto;/*! width: 100%; */">
                                     </div>

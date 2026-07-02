@@ -305,9 +305,13 @@
 	<IsNoDataEnabled>IsNoDataEnabled</IsNoDataEnabled>
 	<SkipAttachment>SkipAttachment</SkipAttachment>
 	<SkipMail>SkipMail</SkipMail>
-    <ScheduleBucketExportInfo>ScheduleBucketExportInfo</ScheduleBucketExportInfo>
+    <ScheduleBucketExportInfo>ScheduleBucketExportInfo</ScheduleBucketExportInfo>  
 	<ReplytoEmail>ReplytoEmail</ReplytoEmail>
 	<ScheduleRunStatus>ScheduleRunStatus</ScheduleRunStatus>
+	<IsGroupingEnabled>IsGroupingEnabled</IsGroupingEnabled>>
+    <ExportTypes>ExportTypes</ExportTypes>
+	<DataDrivenScheduleDetails>DataDrivenScheduleDetails</DataDrivenScheduleDetails>
+	<IsDataDrivenSchedule>IsDataDrivenSchedule</IsDataDrivenSchedule>
   </DB_ScheduleDetail>
   <DB_ScheduleLog>
     <DB_TableName>ScheduleLog</DB_TableName>
@@ -319,6 +323,10 @@
     <IsOnDemand>IsOnDemand</IsOnDemand>
     <IsActive>IsActive</IsActive>
     <Message>Message</Message>
+	<ExportFileName>ExportFileName</ExportFileName>
+	<IsFileActive>IsFileActive</IsFileActive>
+	<RowDetails>RowDetails</RowDetails>
+	<IsDataDriven>IsDataDriven</IsDataDriven>
   </DB_ScheduleLog>
   <DB_ScheduleLogGroup>
     <DB_TableName>ScheduleLogGroup</DB_TableName>
@@ -361,6 +369,7 @@
     <SubscribedDate>SubscribedDate</SubscribedDate>
     <ModifiedDate>ModifiedDate</ModifiedDate>
     <IsActive>IsActive</IsActive>
+    <IsCC>IsCC</IsCC>
   </DB_SubscrExtnRecpt>
   <DB_SubscribedGroup>
     <DB_TableName>SubscribedGroup</DB_TableName>
@@ -371,6 +380,7 @@
     <SubscribedDate>SubscribedDate</SubscribedDate>
     <ModifiedDate>ModifiedDate</ModifiedDate>
     <IsActive>IsActive</IsActive>
+	<IsCC>IsCC</IsCC>
   </DB_SubscribedGroup>
   <DB_SubscribedUser>
     <DB_TableName>SubscribedUser</DB_TableName>
@@ -381,6 +391,7 @@
     <SubscribedDate>SubscribedDate</SubscribedDate>
     <ModifiedDate>ModifiedDate</ModifiedDate>
     <IsActive>IsActive</IsActive>
+	<IsCC>IsCC</IsCC>
   </DB_SubscribedUser>
   <DB_SystemLog>
     <DB_TableName>SystemLog</DB_TableName>
@@ -910,4 +921,24 @@
     <StatusMessage>StatusMessage</StatusMessage>
     <IsActive>IsActive</IsActive>
   </DB_EmailActivityLog>
+  <DB_CustomEmailTemplate>
+		<DB_TableName>CustomEmailTemplate</DB_TableName>
+		<Id>Id</Id>
+		<IsEnabled>IsEnabled</IsEnabled>
+		<DisclaimerContent>DisclaimerContent</DisclaimerContent>
+		<HeaderContent>HeaderContent</HeaderContent>
+		<Subject>Subject</Subject>
+		<TemplateName>TemplateName</TemplateName>
+		<MailBody>MailBody</MailBody>
+		<CreatedDate>CreatedDate</CreatedDate>
+		<ModifiedDate>ModifiedDate</ModifiedDate>
+		<SendEmailAsHTML>SendEmailAsHTML</SendEmailAsHTML>
+		<IsActive>IsActive</IsActive>
+		<TemplateId>TemplateId</TemplateId>
+		<Description>Description</Description>
+		<IsDefaultTemplate>IsDefaultTemplate</IsDefaultTemplate>
+		<IsSystemDefault>IsSystemDefault</IsSystemDefault>
+		<ModifiedBy>ModifiedBy</ModifiedBy>
+    <CustomVisibilityOptions>CustomVisibilityOptions</CustomVisibilityOptions>
+	</DB_CustomEmailTemplate>
 </DB_SyncUMP>

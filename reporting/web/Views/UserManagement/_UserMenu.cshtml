@@ -11,7 +11,7 @@
 }
 
 <div class="top-header-sticky">
-    @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", "[[[USER MANAGEMENT]]]" } })
+    @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", "[[[USER MANAGEMENT]]]" }, { "IsUserManagementHeader", true } })
 </div>
 <nav id="admin-nav">
     <ul>

@@ -8,7 +8,7 @@
     var isAzureApplication = ServerAppConfig.IsAzureApplication;
     var isSelfHosted = ServerAppConfig.IsSelfHosted;
     var helpSiteUrl = GlobalAppSettings.GetHelpSiteUrl(HelpSiteUrlNames.ReportExportScheduleFailure);
- }
+}
 <!DOCTYPE html>
 <html class="report-server">
 <head>
@@ -23,43 +23,43 @@
             <div class="col-sm-2 col-2 export-format format-align-header" id="export-header"><label class="clslab">[[[Format]]]</label></div>
             <div class="col-sm-2 col-2 export-format format-align" id="pdfFormat">
                 <div>
-                    <input type="radio" id="pdf-export" class="css-radio" value="PDF" name="exportFormats" checked="checked" />
+                    <input type="checkbox" id="pdf-export" class="css-radio" value="PDF" name="exportFormats" checked="checked" />
                     <label for="pdf-export" class="pointer normal-font notransition">PDF</label>
                 </div>
             </div>
             <div class="col-sm-2 col-2 export-format format-align" id="excelFormat">
                 <div>
-                    <input type="radio" id="excel-export" class="css-radio" value="Excel" name="exportFormats" />
+                    <input type="checkbox" id="excel-export" class="css-radio" value="Excel" name="exportFormats" />
                     <label for="excel-export" class="pointer normal-font notransition">Excel</label>
                 </div>
             </div>
             <div class="col-sm-2 col-2 export-format format-align" id="wordFormat">
                 <div>
-                    <input type="radio" id="word-export" class="css-radio" value="Word" name="exportFormats" />
+                    <input type="checkbox" id="word-export" class="css-radio" value="Word" name="exportFormats" />
                     <label for="word-export" class="pointer normal-font notransition">Word</label>
                 </div>
             </div>
             <div class="col-sm-2 col-2 export-format format-align" id="htmlFormat">
                 <div>
-                    <input type="radio" id="html-export" class="css-radio" value="HTML" name="exportFormats" />
+                    <input type="checkbox" id="html-export" class="css-radio" value="HTML" name="exportFormats" />
                     <label for="html-export" class="pointer normal-font notransition">HTML</label>
                 </div>
             </div>
             <div class="col-sm-2 col-2 export-format format-align" id="pptFormat">
                 <div>
-                    <input type="radio" id="ppt-export" class="css-radio" value="PPT" name="exportFormats" />
+                    <input type="checkbox" id="ppt-export" class="css-radio" value="PPT" name="exportFormats" />
                     <label for="ppt-export" class="pointer normal-font notransition">PPT</label>
                 </div>
             </div>
             <div class="col-sm-2 col-2 export-format format-align" id="csvFormat">
                 <div>
-                    <input type="radio" id="csv-export" class="css-radio" value="CSV" name="exportFormats" />
+                    <input type="checkbox" id="csv-export" class="css-radio" value="CSV" name="exportFormats" />
                     <label for="csv-export" class="pointer normal-font notransition">CSV</label>
                 </div>
             </div>
             <div class="col-sm-2 col-2 export-format format-align" id="xmlFormat">
                 <div>
-                    <input type="radio" id="xml-export" class="css-radio" value="XML" name="exportFormats" />
+                    <input type="checkbox" id="xml-export" class="css-radio" value="XML" name="exportFormats" />
                     <label for="xml-export" class="pointer normal-font notransition">XML</label>
                 </div>
             </div>
@@ -81,7 +81,7 @@
             {
                 <div id="saveas-export-checkbox" class="col-sm-12 col-12">
                     <div>
-                        <input type="radio" id="saveas-location-export" class="css-radio" value="saveas-location-export" name="location-export" checked="checked"/>
+                        <input type="radio" id="saveas-location-export" class="css-radio" value="saveas-location-export" name="location-export" checked="checked" />
                         <label for="saveas-location-export" class="pointer normal-font notransition">Local Export</label>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
 
             <div id="location-export-checkbox" class="col-sm-12 col-12">
                 <div>
-                    <input type="radio" id="ftp-location-export" class="css-radio" value="ftp-location-export" name="location-export"/>
+                    <input type="radio" id="ftp-location-export" class="css-radio" value="ftp-location-export" name="location-export" />
                     <label for="ftp-location-export" class="pointer normal-font notransition">FTP / SFTP Location Export</label>
                 </div>
             </div>
@@ -143,12 +143,12 @@
                                 <span class="dropdown-bs-toggle" data-bs-toggle="dropdown"><span class="su su-info" title=""></span></span>
                                 <div class="dropdown-menu" role="menu" style="padding:5px">[[[ If using a custom FTP/SFTP port, include it with the host like this: ftp://domain:123 or sftp://domain:123. ]]]</div>
                             </div>
-                            <input type="text" class="form-control" id="ftp-host-name" placeholder="Host" name="host-name" autocomplete="off" disabled="disabled"/>
+                            <input type="text" class="form-control" id="ftp-host-name" placeholder="Host" name="host-name" autocomplete="off" disabled="disabled" />
                             <div id="ftp-hostname-validation" style="display: none"></div>
                         </div>
                         <div class="col-sm-4 col-4">
                             <label class="path-label">[[[Username]]]</label>
-                            <input type="text" class="form-control" id="ftp-user-name" placeholder="[[[Username]]]" name="user-name" autocomplete="off" disabled="disabled"/>
+                            <input type="text" class="form-control" id="ftp-user-name" placeholder="[[[Username]]]" name="user-name" autocomplete="off" disabled="disabled" />
                             <div id="ftp-username-validation" style="display: none"></div>
                         </div>
                         <div class="col-sm-4 col-4">
@@ -164,54 +164,72 @@
 
             <div id="s3-export-checkbox" class="col-sm-12 col-12">
                 <div>
-                    <input type="radio" id="s3bucket-location-export" class="css-radio" value="s3bucket-location-export" name="location-export"/>
+                    <input type="radio" id="s3bucket-location-export" class="css-radio" value="s3bucket-location-export" name="location-export" />
                     <label for="s3bucket-location-export" class="pointer normal-font notransition">S3 Bucket Location Export</label>
                 </div>
             </div>
 
             <div id="s3bucket-export-div" style="display: none;">
                 <form class="col-sm-12 col-12" id="s3bucket-form">
+                    <div id="s3-credential-type-container" class="col-sm-12 col-12 no-padding" style="display: none;">
+                        <div class="col-sm-4 col-4 s3-credential-field">
+                            <label class="path-label">[[[Credential Type]]]</label>
+                            <div class="dropup aws-s3-credential-type">
+                                <select id="s3-credential-type" class="selectpicker form-control s3-credential-dropdown" autocomplete="off" data-size="5">
+                                    <option value="AccessKey">[[[Access Key]]]</option>
+                                    <option value="KmsKey">[[[KMS Key]]]</option>
+                                </select>
+                            </div>
+                            <div id="s3-credential-type-validation" style="display: none"></div>
+                        </div>
+                    </div>
                     <div class="col-sm-12 col-12 no-padding ftp-form-container">
-                        <div class="col-sm-4 col-4">
+                        <div id="s3-access-key-container" class="col-sm-4 col-4 s3-credential-field" style="display: none;">
                             <label class="path-label" style="float:left">[[[Access Key]]]</label>
                             <div class="tool-tip col-1 no-caret" style="padding-left:1.2%;top:1px"></div>
-                            <input type="text" class="form-control" id="s3-access-key" placeholder="Access Key" name="AccessKey" autocomplete="off" disabled="disabled"/>
+                            <input type="text" class="form-control" id="s3-access-key" placeholder="Access Key" name="AccessKey" autocomplete="off" disabled="disabled" />
                             <div id="s3-accesskey-validation" style="display: none"></div>
                         </div>
-                        <div class="col-sm-4 col-4">
+                        <div id="s3-secretkey-container" class="col-sm-4 col-4 s3-credential-field" style="display: none;">
                             <label class="path-label">[[[Secret Key]]]</label>
                             <input type="password" class="form-control password-field" id="s3-secretkey" name="s3-secretkey" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" autocomplete="off" disabled="disabled">
                             <div class="su su-eye show-hide-password ftp-password-icon" style="position: absolute; right: 22px; top:33px; cursor:pointer"></div>
                             <div id="s3-secretkey-validation" style="display: none"></div>
                         </div>
-                        <div class="col-sm-4 col-4">
+                        <div id="s3-kms-key-container" class="col-sm-4 col-4 s3-credential-field" style="display: none;">
+                            <label class="path-label">[[[KMS Key]]]</label>
+                            <input type="password" class="form-control password-field" id="s3-kms-key" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" name="KmsKey" autocomplete="off" disabled="disabled"/>
+                            <div class="su su-eye show-hide-password ftp-password-icon" style="position: absolute; right: 22px; top:33px; cursor:pointer"></div>
+                            <div id="s3-kms-key-validation" style="display: none"></div>
+                        </div>
+                        <div id="s3-bucket-name-container" class="col-sm-4 col-4 s3-credential-field" style="display: none;">
                             <label class="path-label">[[[Bucket Name]]]</label>
-                            <input type="text" class="form-control" id="s3-bucket-name" placeholder="[[[Bucket Name]]]" name="s3bucket-name" autocomplete="off" disabled="disabled"/>
+                            <input type="text" class="form-control" id="s3-bucket-name" placeholder="[[[Bucket Name]]]" name="s3bucket-name" autocomplete="off" disabled="disabled" />
                             <div id="s3-bucketname-validation" style="display: none"></div>
                         </div>
-                        <div class="col-sm-4 col-4">
+                        <div id="s3-region-container" class="col-sm-4 col-4 s3-credential-field" style="display: none;">
                             <label class="path-label">[[[Region]]]</label>
                             <div class="dropup aws-s3-region-drop-down">
                                 @Html.DropDownList("region", ViewBag.AwsRegion as IEnumerable<SelectListItem>, new { id = "s3-region", @class = "selectpicker form-control", data_none_results_text = "[[[No results match]]]", data_size = "5", data_live_search = "true", data_live_search_placeholder = "Search", disabled = "disabled" })
                             </div>
                         </div>
                     </div>
-                <div class="col-sm-12 col-12" id="s3-bucket-validation" style="display: none"></div>
+                    <div class="col-sm-12 col-12" id="s3-bucket-validation" style="display: none"></div>
                 </form>
             </div>
         </div>
         <div class="col-sm-6 col-6" id="checkbox-validation" style="visibility: hidden">[[[Please select at least one option to schedule a report ]]]</div>
-        
+
         <div class="col-sm-12 col-12 send-mail-block">
             <div class="col-sm-12 col-12 send-mail-align">
                 <label class="col-sm-12 col-12 clspadleft app-checkbox-label normal-font sendmail-label no-padding">Select Recipients</label>
             </div>
-            <div class="col-sm-12 col-12 bottom-margin no-padding">
+            <div class="col-sm-12 col-12 bottom-margin no-padding" style="margin-left:10px;width:920px;">
                 <div id="user-search-container" class="col-sm-4 col-4 no-padding no-margin i-search-fields">
-                    <select id="user-search" class="selectpicker" data-size="5" data-live-search="true" data-none-results-text="[[[No results match]]]" data-live-search-placeholder="Search" title="[[[Select Users]]]" data-hide-disabled="true" multiple="" data-actions-box="true"></select>
+                    <input type="text" id="user-search">
                 </div>
                 <div id="group-search-container" class="col-sm-4 col-4 no-padding no-margin i-search-fields">
-                    <select id="group-search" class="selectpicker" data-size="5" data-live-search="true" data-none-results-text="[[[No results match]]]" data-live-search-placeholder="Search" title="[[[Select Groups]]]" data-hide-disabled="true" multiple="" data-actions-box="true"></select>
+                    <input type="text" id="group-search">
                 </div>
 
                 <form id="email-form" class="col-sm-4 col-4 no-margin">
@@ -229,6 +247,47 @@
         </div>
         <div id="selected-users-validation">[[[Select a user, group, or type an email address in the external recipient to schedule]]]</div>
         <div id="selected-users-info" class="col-sm-5 col-5 no-margin i-search-fields"></div>
+        <div id="enable-grouping" class="col-sm-12 col-12 no-margin">
+            <div id="enable-grouping-checkbox-div" class="d-flex align-items-center">
+                <div class="d-flex align-items-center" style="padding-top:10px;">
+                    @Html.CheckBox("enable-grouping-checkbox", new { @class = "material-checkbox", @id = "enable-grouping-checkbox" })
+                    @Html.Label("enable-grouping-checkbox", "[[[Combine Recipients]]]", new { style = "margin-bottom:0; margin-right:6px;" })
+                    <div class="nodata-options-tag no-margin no-caret" style="    padding: 8px 5px 0px 0px;">
+                        <span class="dropdown-toggle cursor-type" id="combine-recipients-info" data-bs-toggle="dropdown">
+                            <span class="su su-info"></span>
+                        </span>
+                        <div class="dropdown-menu" id="combine-recipients-help-message" role="menu" style="width:400px !important"> [[[When enabled, recipients will be combined and a single email will be sent instead of multiple individual emails.]]]</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-12 cc-send-mail-block" style="display: none">
+            <div class="col-sm-12 col-12 send-mail-align">
+                <label class="col-sm-12 col-12 clspadleft app-checkbox-label normal-font sendmail-label no-padding">Select CC</label>
+            </div>
+            <div class="col-sm-12 col-12 bottom-margin no-padding">
+                <div id="cc-user-search-container" class="col-sm-4 col-4 no-padding no-margin i-search-fields">
+                    <select id="cc-user-search" class="selectpicker" data-size="5" data-live-search="true" data-none-results-text="[[[No results match]]]" data-live-search-placeholder="Search" title="[[[Select Users for CC]]]" data-hide-disabled="true" multiple="" data-actions-box="true"></select>
+                </div>
+                <div id="cc-group-search-container" class="col-sm-4 col-4 no-padding no-margin i-search-fields">
+                    <select id="cc-group-search" class="selectpicker" data-size="5" data-live-search="true" data-none-results-text="[[[No results match]]]" data-live-search-placeholder="Search" title="[[[Select Groups for CC]]]" data-hide-disabled="true" multiple="" data-actions-box="true"></select>
+                </div>
+
+                <form id="cc-email-form" class="col-sm-4 col-4 no-margin">
+                    <div class="inner-addon right-addon has-feedback position-relative">
+                        <input id="cc-external-email" type="text" class="form-control pe-5" placeholder="[[[External Recipients]]] ([[[Email address]]])">
+                        <span id="cc-external-submit" class="position-absolute top-50 end-0 translate-middle-y me-3 su-add form-control-feedback" title="[[[Add external recipients]]]"></span>
+                    </div>
+                    <span id="cc-external-email-validation" class="alertMessages"></span>
+                </form>
+
+            </div>
+            <div class="col-sm-12 col-12 no-padding" id="cc-selected-users-container">
+                <div class="col-sm-3 col-3 cc-selected-recipients" id="cc-selected-users"></div>
+            </div>
+        </div>
+        <div id="cc-selected-users-validation">[[[Select a user, group, or type an email address in the external recipient to schedule]]]</div>
+        <div id="cc-selected-users-info" class="col-sm-5 col-5 no-margin i-search-fields"></div>
         <div class="col-sm-12 col-12 reply-to-send-mail-block d-none" style="padding-left:1.2%; margin-top:20px;">
             <div class="reply-to-inline align-items-center">
                 <label for="reply-to-email"
@@ -245,7 +304,7 @@
             </div>
             <div class="reply-to-email-validation"></div>
         </div>
-        @if(isSelfHosted)
+        @if (isSelfHosted)
         {
             <div id="failure-notification" class="col-sm-12 col-12  no-margin">
                 <div id="enable-checkbox">
@@ -270,11 +329,11 @@
 </body>
 </html>
 <script nonce="@Model">
-           var getActiveandInactiveUserUrl = "@Url.Action("getallactivegroupsandusers", "accounts")";
-           var updateScheduleUrl = "@Url.Action("UpdateSchedule", "scheduler")";
-           var addScheduleUrl = "@Url.Action("AddSchedule", "scheduler")";
-           var validateFTPCredentialsUrl = "@Url.Action("ValidateFTPCredentials", "scheduler")";
-           var validateS3BucketCredentialsUrl = "@Url.Action("ValidateS3Credentials", "Scheduler")";
-           var isAzureApplication = @Json.Serialize(isAzureApplication);
-           var isSelfHosted = @Json.Serialize(isSelfHosted);
+    var getActiveandInactiveUserUrl = "@Url.Action("getallactivegroupsandusers", "accounts")";
+    var updateScheduleUrl = "@Url.Action("UpdateSchedule", "scheduler")";
+    var addScheduleUrl = "@Url.Action("AddSchedule", "scheduler")";
+    var validateFTPCredentialsUrl = "@Url.Action("ValidateFTPCredentials", "scheduler")";
+    var validateS3BucketCredentialsUrl = "@Url.Action("ValidateS3Credentials", "Scheduler")";
+    var isAzureApplication = @Json.Serialize(isAzureApplication);
+    var isSelfHosted = @Json.Serialize(isSelfHosted);
 </script>

@@ -310,7 +310,7 @@ CREATE TABLE BOLDTC_SAMLSettings (
 CREATE TABLE BOLDTC_SystemSettings (
 	Id SERIAL NOT NULL,
 	SystemKey varchar(255) NOT NULL UNIQUE,
-	SystemValue varchar(4000),
+	SystemValue text,
 	ModifiedDate timestamp NOT NULL,
 	IsActive smallint NOT NULL,
   CONSTRAINT PK_BOLDTC_SYSTEMSETTINGS PRIMARY KEY (Id)

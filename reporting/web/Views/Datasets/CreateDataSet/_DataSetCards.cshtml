@@ -5,11 +5,11 @@
 <script nonce="@Context.Items["ScriptNonce"]">
     var createDatasource = "@Url.Action("CreateDataSource", "DataSources")";
 </script>
-<div class="cds-card-container" ng-controller="DataSetCardCtrl">
+<div class="cds-card-container">
     <div class="cds-card-items">
         @if (CreateAccess)
         {
-            <div class="cds-card" ng-click="onCreateDataSourceClick()">
+            <div class="cds-card" data-action="create-datasource">
                 <div class="cds-card-left-container">
                     <div class="cds-card-img-container">
                         <img class="cds-card-img" alt="Create Data Source" src="@(globalAppSettings.SystemSettings.CDNLink.TrimEnd('/') + "/cdn/images/static/dataset/create-datasource.svg")">
@@ -23,7 +23,7 @@
             </div>
         }
 
-        <div class="cds-card" ng-click="onExistingDataSourceClick()">
+        <div class="cds-card" data-action="existing-datasource">
             <div class="cds-card-left-container">
                 <div class="cds-card-img-container">
                     <img class="cds-card-img" alt="Create Data Source" src="@(globalAppSettings.SystemSettings.CDNLink.TrimEnd('/') + "/cdn/images/static/dataset/existing-datasource.svg")">

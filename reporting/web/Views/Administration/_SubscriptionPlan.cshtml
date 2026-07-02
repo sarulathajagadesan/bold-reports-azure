@@ -333,7 +333,7 @@
                 </button>
             </h4>
         </div>*@
-    <div class="fluent-popup-body buy-additional-storage-popup-body" ng-app="serverApp" ng-controller="additionalStorageController">
+    <div class="fluent-popup-body buy-additional-storage-popup-body">
         @*<div id="storage-selection-container">
                 <div class="storage-selection-section">
                     <span>
@@ -397,7 +397,7 @@
                 <span class="col-12 horizontal-divider"></span>
                 <div class="payment-summary">
                     <label class="storage-payment-label">[[[Total Payment]]]</label>
-                    <span class="storage-total-price">${{storageSelectionSize*10}} / Mo</span>
+                    <span class="storage-total-price" id="storage-total-price-display">$10 / Mo</span>
                 </div>
             </form>
         </div>

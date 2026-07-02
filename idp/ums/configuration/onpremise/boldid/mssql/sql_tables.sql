@@ -1,4 +1,4 @@
-﻿CREATE TABLE [BOLDTC_CouponLogType] (
+CREATE TABLE [BOLDTC_CouponLogType] (
 	Id int IDENTITY(1,1) NOT NULL,
 	Name nvarchar(max) NOT NULL,
 	IsActive bit NOT NULL,
@@ -413,7 +413,7 @@ CREATE TABLE [BOLDTC_SAMLSettings] (
 CREATE TABLE [BOLDTC_SystemSettings] (
 	Id int IDENTITY(1,1) NOT NULL,
 	SystemKey nvarchar(255) NOT NULL UNIQUE,
-	SystemValue nvarchar(4000),
+	SystemValue nvarchar(max),
 	ModifiedDate datetime NOT NULL,
 	IsActive bit NOT NULL,
   CONSTRAINT [PK_BOLDTC_SYSTEMSETTINGS] PRIMARY KEY CLUSTERED

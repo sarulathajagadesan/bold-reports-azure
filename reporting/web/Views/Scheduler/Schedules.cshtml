@@ -100,7 +100,7 @@
                             gridLines: ej.Grid.GridLines.None,
                             recordClick: manageSchedule,
                             toolbarSettings: { showToolbar: false, toolbarItems: [ej.Grid.ToolBarItems.Search] },
-                            searchSettings: { fields: ["Name", "ItemName", "LastRunString", "NextScheduleString", "ExportPath", "ScheduleParameter", "Status"], key: "", ignoreCase: false },
+                            searchSettings: { fields: ["Name", "ScheduleType", "ItemName", "LastRunString", "NextScheduleString", "ExportPath", "ScheduleParameter", "Status"], key: "", ignoreCase: false },
                             actionBegin: "fnActionBegin",
                             actionComplete: function(args) {
                                 $('[data-bs-toggle="tooltip"]').tooltip();
@@ -132,6 +132,13 @@
                                     ? 100
                                     : 80
                                 },
+                                {
+                                    field: "ScheduleType",
+                                    headerText: "[[[Schedule Type]]]",
+                                    templateID: "#schedule-type-template",
+                                    type: "string",
+                                    width: 100
+                                },  
                                 {
                                     field: "ItemName",
                                     headerText: "[[[Report]]]",
@@ -261,6 +268,12 @@
             </script>
             <script nonce="@Context.Items["ScriptNonce"]" type="text/x-jsrender" id="item-name-header">
                 <div class="item-name">[[[Name]]]</div>
+            </script>
+           
+            <script nonce="@Context.Items["ScriptNonce"]" type="text/x-jsrender" id="schedule-type-template">
+                <div class="item-name grid-content">
+                {{:IsDataDrivenSchedule == 1 ? "Data-Driven" : "Standard"}}
+                </div>
             </script>
             <script nonce="@Context.Items["ScriptNonce"]" type="text/x-jsrender" id="next-schedule-header">
                 <div title="[[[Next Scheduled Run]]]">[[[Next Scheduled Run]]]</div>

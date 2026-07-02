@@ -1,44 +1,56 @@
-<div id="emaillog-info-popup" class="fluent-popup custom-bootstrap-styles custom-server-style" style="display: none" ng-controller="EmailLogInfoCtrl">
+<div id="emaillog-info-popup" class="fluent-popup custom-bootstrap-styles custom-server-style" style="display: none">
     <div class="fluent-popup-header">
         <h4 class="popup-title">
             <span id="info-dialog-header">[[[Details]]]</span>
-            <button id="close-info-dialog" type="button" title="Close" data-toggle="tool-tip" data-container="body" class="close popup-close" ng-click="closeItemInfo()" aria-label="Close">
+            <button id="close-info-dialog" type="button" title="Close" data-toggle="tool-tip" data-container="body" class="close popup-close" aria-label="Close">
                 <span class="su su-close"></span>
             </button>
         </h4>
     </div>
     <div class="fluent-item-popup-body">
         <span class="email-log-event">
-            <label class="info-label">[[[Event]]]</label> {{EmailLogDetail.Event}}
+            <label class="info-label">[[[Event]]]</label> 
+            <span id="el-event"></span>
         </span>
         <span class="email-log-date">
-            <label class="info-label">[[[Date]]]</label> {{EmailLogDetail.ModifiedDateString}}
+            <label class="info-label">[[[Date]]]</label>
+            <span id="el-date"></span>
         </span>
         <span class="email-log-status">
-            <label class="info-label">[[[Status]]]</label> {{EmailLogDetail.Status}}
+            <label class="info-label">[[[Status]]]</label>
+            <span id="el-status"></span>
         </span>
         <span class="email-log-recipient">
-            <label class="info-label">[[[Recipient]]]</label> <span data-toggle="tooltip" data-original-title="{{EmailLogDetail.RecipientEmail}}">{{EmailLogDetail.RecipientEmail}}</span>
+            <label class="info-label">[[[Recipient]]]</label>
+            <span id="el-recipient" data-toggle="tooltip"></span>
         </span>
         <span class="email-log-initiated">
-            <label class="info-label">[[[Initiated By]]]</label> <span data-toggle="tooltip" data-original-title="{{EmailLogDetail.InitiatedBy}}">{{EmailLogDetail.InitiatedBy}}</span>
+            <label class="info-label">[[[Initiated By]]]</label>
+            <span id="el-initiated" data-toggle="tooltip"></span>
         </span>
-        <div class="mail-error-message" style="display:none">
+
+        <div id="el-error-container" class="mail-error-message" style="display:none">
             <label class="info-label">[[[Error Message]]]</label>
-            <div id="mail-error-message" class="form-control" name="text" readonly style="display: flex;justify-content: space-between;align-items: center;">{{EmailLogDetail.StatusMessage}}
-                <span ng-if="EmailLogDetail.StatusMessage=='Mail settings not configured'" style="margin-top:10px">
-                    <a href="@Url.Action("EmailSettings", "Administration")" class="text-primary"><i class="fa fa-cog"></i>Configure</a>
-                </span>
+
+            <div id="mail-error-message" class="form-control"
+                 style="display: flex;justify-content: space-between;align-items: center;">
             </div>
+
+            <span id="el-config-link" style="margin-top:10px; display:none">
+                <a href="@Url.Action("EmailSettings", "Administration")" class="text-primary">
+                    <i class="fa fa-cog"></i>Configure
+                </a>
+            </span>
         </div>
+
         <div class="mail-body">
             <label class="info-label">[[[Email Message]]]</label>
-            <div id="mail-body" class="form-control" name="text" readonly>{{EmailLogDetail.MailBody}}</div>
+            <div id="mail-body" class="form-control" name="text" readonly></div>
         </div>
     </div>
     <div class="fluent-popup-footer">
         <div class="col-xs-12 no-padding">
-            <button class="secondary-button" ng-click="closeItemInfo()" title="">[[[Cancel]]]</button>
+            <button id="cancel-btn" class="secondary-button">[[[Cancel]]]</button>
         </div>
     </div>
 </div>

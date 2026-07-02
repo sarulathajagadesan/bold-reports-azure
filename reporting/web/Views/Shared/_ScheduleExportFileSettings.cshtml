@@ -84,8 +84,8 @@
                 <div class="bg-info col-lg-8 col-md-8 col-sm-8" id="default-password-info">
                     [[[Default password creation uses the first and last four characters of your email address.]]]
                 </div>
-                    <div class="bg-info col-lg-8 col-md-8 col-sm-8" id="custom-password-info" style="display:none; width:auto; height:auto; padding:6px 10px;">
-                    [[[Custom passwords apply only to Bold Reports Server users and cannot be used for external recipients.]]]
+                <div class="bg-info col-lg-8 col-md-8 col-sm-8" id="custom-password-info">
+                    [[[For external recipients, password creation supports only Email and Custom Text.]]]
                 </div>
             </div>
         </div>
@@ -96,13 +96,14 @@
                     <div class="i-search-fields">
                         <select data-width="50px" class="select-picker no-padding field-key-position" id="field-key-position" disabled data-size="2"></select>
                     </div>
-                    <div style="width: 110px;">
+                    <div class="numeric-wrapper" style="width: 110px;">
                         @Html.TextBox("field-key-count", "", new { @class = "form-control field-key-count numeric-text-box", disabled = "disabled" })
                     </div>
-                    <label class="app-textbox-label no-margin notransition mb-0">character of</label>
+                    <label class="app-textbox-label no-margin notransition mb-0"  style="width: 90px; margin-left: 5px;">character of</label>
                     <div class="i-search-fields">
                         <select class="select-picker field-key no-padding" id="field-key" disabled data-size="4"></select>
                     </div>
+                    <input type="password" class="form-control custom-text-input" placeholder="Enter custom text" maxlength="8" style="display:none; width:180px;" />
                     <span class="su-add pwd-condition-btn app-textbox-label no-margin no-padding" data-bs-toggle="tooltip" data-bs-placement="right" title="Add New Condition"> </span>
                 </div>
             </div>
@@ -175,28 +176,48 @@
             </div>
 
             <div id="s3bucket-form">
+                <div class="row g-3 s3-form-container mb-3">
+                    <div class="col-md-3 col-12 s3-credential-field">
+                        <label class="path-label">[[[Credential Type]]]</label>
+                        <div class="dropup aws-s3-credential-type">
+                            <select id="s3-settings-credential-type" class="selectpicker form-control s3-credential-dropdown" autocomplete="off" data-size="5">
+                                <option value="AccessKey">[[[Access Key]]]</option>
+                                <option value="KmsKey">[[[KMS Key]]]</option>
+                            </select>
+                        </div>
+                        <div id="s3-settings-credential-type-validation" class="invalid-feedback" style="display: none"></div>
+                    </div>
+                </div>
+
                 <div class="row g-3 s3-form-container">
-                    <div class="col-md-3">
+                    <div id="s3-settings-access-key-container" class="col-md-3 position-relative s3-credential-field" style="display: none;">
                         <label class="path-label">[[[Access Key]]]</label>
                         <input type="password" class="form-control" id="s3-settings-access-key" placeholder="••••••••" name="AccessKey" autocomplete="off" disabled />
                         <div class="su su-eye show-hide-password ftp-password-icon" style="position: absolute; right: 22px; top: 38px; cursor: pointer"></div>
                         <div id="s3-settings-accesskey-validation" class="invalid-feedback" style="display: none"></div>
                     </div>
 
-                    <div class="col-md-3 position-relative">
+                    <div id="s3-settings-secretkey-container" class="col-md-3 position-relative s3-credential-field" style="display: none;">
                         <label class="path-label">[[[Secret Key]]]</label>
                         <input type="password" class="form-control password-field" id="s3-settings-secretkey" name="s3-secretkey" placeholder="••••••••" autocomplete="off" disabled />
                         <div class="su su-eye show-hide-password ftp-password-icon" style="position: absolute; right: 22px; top: 38px; cursor: pointer"></div>
                         <div id="s3-settings-secretkey-validation" class="invalid-feedback" style="display: none"></div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div id="s3-settings-kms-key-container" class="col-md-3 position-relative s3-credential-field" style="display: none;">
+                        <label class="path-label">[[[KMS Key]]]</label>
+                        <input type="password" class="form-control password-field" id="s3-settings-kms-key" placeholder="••••••••" name="KmsKey" autocomplete="off" disabled />
+                        <div class="su su-eye show-hide-password ftp-password-icon" style="position: absolute; right: 22px; top: 38px; cursor: pointer"></div>
+                        <div id="s3-settings-kms-key-validation" class="invalid-feedback" style="display: none"></div>
+                    </div>
+
+                    <div id="s3-settings-bucket-name-container" class="col-md-3 s3-shared-field" style="display: none;">
                         <label class="path-label">[[[Bucket Name]]]</label>
                         <input type="text" class="form-control" id="s3-settings-bucket-name" placeholder="[[[Bucket Name]]]" name="s3bucket-name" autocomplete="off" disabled />
                         <div id="s3-settings-bucketname-validation" class="invalid-feedback" style="display: none"></div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div id="s3-settings-region-container" class="col-md-3 s3-shared-field" style="display: none;">
                         <label class="path-label">[[[Region]]]</label>
                         <div class="dropup aws-s3-region-drop-down">
                             @if (ViewBag.AwsRegion != null)
