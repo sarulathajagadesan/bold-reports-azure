@@ -1,11 +1,17 @@
 ﻿@using Syncfusion.Server.Base;
 @using Syncfusion.Server.Base.DataClasses;
 @using Microsoft.AspNetCore.Http;
+@using System.Collections.Generic
 @{
     Layout = null;
     var imageHelper = new ImageHelper(Context);
-    var errorstacktrace = GlobalAppSettings.ReplaceErrorStackTrace(ViewBag.Errorstacktrace);
+    var rawErrorStackTrace = Convert.ToString(ViewBag.Errorstacktrace);
+    var errorstacktrace = string.IsNullOrEmpty(rawErrorStackTrace) ? string.Empty : GlobalAppSettings.ReplaceErrorStackTrace(rawErrorStackTrace);
     var isAdmin = Context.Session.GetString("IsAdmin") != null ? Convert.ToBoolean(Context.Session.GetString("IsAdmin").ToString()) : false;
+    var isUpgradeExecutionError = string.Equals(ViewBag.ErrorType as string, "upgrade_execution", StringComparison.OrdinalIgnoreCase);
+    var upgradeErrorDetails = ViewBag.UpgradeErrorDetails as IEnumerable<KeyValuePair<string, string>>;
+    var upgradeAccessDecision = ViewBag.UpgradeSiteAccessDecision as UpgradeSiteAccessDecision;
+    var continueAccessUrl = GlobalAppSettings.SystemSettings.BaseUrl + (GlobalAppSettings.SystemSettings.BaseUrl.Contains("?") ? "&" : "?") + "continue-upgrade-access=true";
 }
 <!DOCTYPE html>
 <html>
@@ -50,20 +56,66 @@
                     @if (GlobalAppSettings.SystemSettings.ShowStackTrace || isAdmin)
                     {
                         <div id="deploy-error-container">
-                            <textarea type="text" id="deploy-error-box" disabled>@T["ErrorMessage"]:@ViewBag.ErrorMessage 
+                            @if (isUpgradeExecutionError && upgradeErrorDetails != null)
+                            {
+                                <div class="upgrade-error-box" style="width: 500px; height: 120px; overflow: auto; border: 1px solid var(--grey-400); box-sizing: border-box; border-radius: 4px; padding: 12px 36px 12px 14px; text-align: left; background: var(--surface); color: var(--primary-text-normal-color); font-size: 12px; line-height: 20px;">
+                                    @foreach (var detail in upgradeErrorDetails)
+                                    {
+                                        <div>
+                                            <strong>@detail.Key:</strong>
+                                            <span>@detail.Value</span>
+                                        </div>
+                                    }
+                                </div>
+                                <textarea type="text" id="deploy-error-box" disabled style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">@ViewBag.ErrorMessage</textarea>
+                            }
+                            else
+                            {
+                                <textarea type="text" id="deploy-error-box" disabled>@T["ErrorMessage"]:@ViewBag.ErrorMessage
 @T["ErrorStacktrace"]:@errorstacktrace</textarea>
+                            }
                             <span class="su su-copy text focus" id="deploy-error-copy" data-bs-toggle="tooltip" title="@T["Click to copy"]"></span>
                         </div>
                     }
                     else
                     {
                         <div id="deploy-error-container">
-                            <textarea type="text" id="deploy-error-box" disabled>@T["ErrorMessage"]:@ViewBag.ErrorMessage</textarea>
+                            @if (isUpgradeExecutionError && upgradeErrorDetails != null)
+                            {
+                                <div class="upgrade-error-box" style="width: 500px; height: 120px; overflow: auto; border: 1px solid var(--grey-400); box-sizing: border-box; border-radius: 4px; padding: 12px 36px 12px 14px; text-align: left; background: var(--surface); color: var(--primary-text-normal-color); font-size: 12px; line-height: 20px;">
+                                    @foreach (var detail in upgradeErrorDetails)
+                                    {
+                                        <div>
+                                            <strong>@detail.Key:</strong>
+                                            <span>@detail.Value</span>
+                                        </div>
+                                    }
+                                </div>
+                                <textarea type="text" id="deploy-error-box" disabled style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">@ViewBag.ErrorMessage</textarea>
+                            }
+                            else
+                            {
+                                <textarea type="text" id="deploy-error-box" disabled>@T["ErrorMessage"]:@ViewBag.ErrorMessage</textarea>
+                            }
                             <span class="su su-copy text focus" id="deploy-error-copy" data-bs-toggle="tooltip" title="@T["Click to copy"]"></span>
                         </div>
                     }
 
-                    @if (!CloudAppConfig.IsHideHelpLink)
+                    @if (isUpgradeExecutionError)
+                    {
+                        <div class="take-me-back-to-home-page">
+                            @if (upgradeAccessDecision?.CanAccessSite == true)
+                            {
+                                <span class="error-page-cursor"><a class="error-to-back-text-color" href="@continueAccessUrl" style="color: var(--global-link-text-normal-color); text-decoration: underline;">@T["Continue to site"]</a></span>
+                                <span>@T["and review the application logs before retrying the upgrade."]</span>
+                            }
+                            else
+                            {
+                                <span>@T["Site access is temporarily blocked because the database upgrade could not be safely completed. Review the application logs and resolve the upgrade issue before retrying."]</span>
+                            }
+                        </div>
+                    }
+                    else if (!CloudAppConfig.IsHideHelpLink)
                     {
                         <div class="take-me-back-to-home-page">
                             @{

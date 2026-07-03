@@ -11,8 +11,7 @@
     var datasourceName = string.Empty;
     var globalAppSettings = _globalAppSettings;
     var baseUrl = globalAppSettings.SystemSettings.BaseUrl;
-    var reportServerApiUrl = ServerAppConfig.GetDesignerServiceEndPointUrl(new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl(), _globalAppSettings, Context);
-
+    var reportServerApiUrl = new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl();
     if (!string.IsNullOrWhiteSpace(ViewBag.datasourceName))
     {
         datasourceName = HttpUtility.HtmlDecode(ViewBag.datasourceName);
@@ -188,7 +187,6 @@
     <script nonce="@Context.Items["ScriptNonce"]">
         var controlId = 'container';
 		var isEditReport = false;
-        var designerToken = "@ViewBag.AccessToken";
         var categoryName = decodeHtmlAsString("@categoryName");
         var reportName = decodeHtmlAsString("@reportName");
         var datasetName = decodeHtmlAsString("@datasetName");
@@ -247,7 +245,6 @@
                 create: $.proxy(controlInitialization, this),
                 toolbarRendering: $.proxy(renderEJ2ToolbarItems , this),
                 reportServerUrl: "@reportServerApiUrl",
-                serviceAuthorizationToken: designerToken,
                 locale: '@language',
                 ajaxBeforeLoad: ajaxBeforeSend,
                 encryptData: encryptData,
@@ -329,7 +326,7 @@
             queryDesigner.getDataSet(function (args) {
                 doAjaxPost(serviceUrl + '/PostDesignerAction/', JSON.stringify({
                     'designerAction': isEditReport ? 'SaveSharedDataSet' : 'CreateSharedDataSet',
-                    'sharedData': ej.ReportUtil.encryptSharedDatasetModel(args.newSharedDataSet, queryDesigner),
+                    'sharedData': ej.EncryptionUtil.encryptSharedDatasetModel(args.newSharedDataSet, queryDesigner),
                     'name': datasetName,
                     'sharedDataMapping': args.sharedDataMapping,
                     'customData': {
@@ -407,7 +404,7 @@
         function newDataSet(selectData) {
             var designer = $('#' + ctrlId).data('boldReportQueryDesigner');
             doAjaxPost(serviceUrl + '/PostDesignerAction/', JSON.stringify({
-                'designerAction': ej.ReportUtil.DesignerAction.dataSourceCatalog,
+                'designerAction': ej.ActionUtil.DesignerAction.dataSourceCatalog,
             }), {
                 fnction: function (args) {
                     var dataSources = [];
@@ -433,7 +430,7 @@
         function editDataSet(dataSetName) {
             var queryDesigner = $('#' + ctrlId).data('boldReportQueryDesigner');
             doAjaxPost(serviceUrl + '/PostDesignerAction/', JSON.stringify({
-                'designerAction': ej.ReportUtil.DesignerAction.dataSourceCatalog,
+                'designerAction': ej.ActionUtil.DesignerAction.dataSourceCatalog,
             }), {
                 fnction: function (args) {
                     var dataSources = [];
@@ -465,7 +462,7 @@
         function editSharedDataSet(dataSetName, dataSources) {
             var queryDesigner = $('#' + ctrlId).data('boldReportQueryDesigner');
             doAjaxPost(serviceUrl + '/PostDesignerAction/', JSON.stringify({
-                'designerAction': ej.ReportUtil.DesignerAction.sharedDataSet,
+                'designerAction': ej.ActionUtil.DesignerAction.sharedDataSet,
                 'reportInfo': {
                     'dataSetRefer': dataSetName
                 }
@@ -540,9 +537,8 @@
                 data: jsonObj,
                 beforeSend: function (req) {
                     req.setRequestHeader('ServerUrl', '@reportServerApiUrl');
-                    req.setRequestHeader('serviceAuthorizationToken', designerToken);
                     if (callBack && callBack.indicator && callBack.indicator.length > 0) {
-                        ej.ReportUtil.invokeCallBack(callBack.indicator[0], {});
+                        ej.WidgetUtil.invokeCallBack(callBack.indicator[0], {});
                     }
                     _setRequestHeader(req);
                 },
@@ -553,16 +549,16 @@
                     var jsonData = data;
                     if (callBack) {
                         if (callBack.indicator && callBack.indicator.length > 0) {
-                            ej.ReportUtil.invokeCallBack(callBack.indicator[1], {});
+                            ej.WidgetUtil.invokeCallBack(callBack.indicator[1], {});
                         }
                         if (callBack.fnction) {
-                            ej.ReportUtil.invokeCallBack(callBack.fnction, jsonData);
+                            ej.WidgetUtil.invokeCallBack(callBack.fnction, jsonData);
                         }
                     }
                 },
                 error: function (msg, textStatus, errorThrown) {
                     if (callBack && callBack.indicator && callBack.indicator.length > 0) {
-                        ej.ReportUtil.invokeCallBack(callBack.indicator[1], {});
+                        ej.WidgetUtil.invokeCallBack(callBack.indicator[1], {});
                     }
                 }
             });

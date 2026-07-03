@@ -11,6 +11,7 @@
     var reportServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var granularPermissions = ViewBag.GranularPermissions as Dictionary<object, bool>;
     var isAdmin = _identityResponse.IsAdmin;
+    var groupDetails = ViewBag.groupDetails;
 }
 
 @section scripts{
@@ -28,16 +29,8 @@
     </environment>
 
     <script nonce="@Context.Items["ScriptNonce"]" type="text/javascript">
-        var groupDetails = @Json.Serialize(ViewBag.groupDetails);
         var groupId = @ViewBag.groupId;
         var groupAttributesUrl = "@Url.Action("GetGroupAttributes", "CustomAttribute")";
-        groupDetails.GroupName = decodeHtmlAsString(groupDetails.GroupName);
-        groupDetails.GroupDescription = decodeHtmlAsString(groupDetails.GroupDescription);
-        serverApp.controller('GroupEditController', function ($scope) {
-            $scope.selectedRow = 1;
-            $scope.page = 0;
-            $scope.allGroupDetails = groupDetails;
-        });
         $(document).ready(function () {
             $("#search-group-users").val("");
             $("#Grid").ejGrid({
@@ -207,14 +200,14 @@
 @section MainSection{
     @await Html.PartialAsync("../UserManagement/_UserMenu")
 
-    <div id="view-page-container" class="admin-page-container" ng-controller="GroupEditController">
+    <div id="view-page-container" class="admin-page-container">
         <div id="group-header" class="row align-items-center admin-page-header import-area">
             <div class="col-md-6 d-flex align-items-center no-padding">
                 <a href="@Url.Action("group","group")" title="[[[Groups]]]" class="back-button d-flex align-items-center me-1" data-bs-toggle="tooltip" data-bs-placement="top" data-container="body">
                     <i class="su su-arrow-back back-navigaion img-size"> </i>
                 </a>
                 <hgroup class="col-md-5 col-12 wrapper">
-                    <h2 class="page-title m-0"><span ng-bind="allGroupDetails.GroupName" title="{{allGroupDetails.GroupName}}"></span></h2>
+                    <h2 class="page-title m-0"><span title="@groupDetails.GroupName">@groupDetails.GroupName</span></h2>
                 </hgroup>
             </div>
             <div class="col-md-6 text-end no-padding">
@@ -228,7 +221,7 @@
                 }
                 <input type="button" class="primary-button app-btn-primary float-end" id="add-custom-attribute" title="" value="[[[Add Attribute]]]" data-id="@ViewBag.groupId">
                 @if ((isAdmin || granularPermissions[PermissionEntity.UsersandGroups] || granularPermissions[PermissionEntity.SpecificGroup]) && ViewBag.groupId != 1)                {
-                    <input type="button" class="critical-action-button app-btn-danger delete-group delete" title="" data-groupid="@ViewBag.groupId" value="[[[Delete Group]]]" data-groupname="{{allGroupDetails.GroupName}}" />
+                    <input type="button" class="critical-action-button app-btn-danger delete-group delete" title="" data-groupid="@ViewBag.groupId" value="[[[Delete Group]]]" data-groupname="@groupDetails.GroupName" />
                 }
             </div>
         </div>
@@ -250,14 +243,14 @@
                         <div class="row">
                             <div class="col-2 float-end">[[[Name]]]</div>
                             <div class="group-info-text col-md-4 col-6 float-end" id="group-name">
-                                {{allGroupDetails.GroupName}}
+                                @groupDetails.GroupName
                             </div>
                             <div class="col-md-6 col-4 no-padding"><span id="invalid-groupname" class="error-message" title="[[[Please enter group name]]]" data-content=""></span></div>
                         </div>
                         <div class="row">
                             <div class="col-md-2 col-2 float-end">[[[Description]]]</div>
                             <div class="group-info-text col-md-7 col-10 float-end">
-                                {{allGroupDetails.GroupDescription}}
+                                @groupDetails.GroupDescription
                             </div>
                         </div>
                     </form>

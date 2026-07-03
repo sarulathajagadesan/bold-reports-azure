@@ -268,9 +268,12 @@ CREATE TABLE [BOLDRS_ScheduleDetail](
 	[IsOverwrite] [bit] NOT NULL,
 	[ExportFileName] [nvarchar](150) NULL,
 	[ScheduleExportInfo] [nvarchar](4000) NULL,
-	[ScheduleBucketExportInfo] [nvarchar](4000) NULL,
+	[ScheduleBucketExportInfo] [nvarchar](max) NULL,
 	[ReplytoEmail] [nvarchar](640) NULL,
-    [ScheduleRunStatus] [nvarchar](1000) NULL )
+    [ScheduleRunStatus] [nvarchar](1000) NULL ,
+	[ExportTypes] [nvarchar](500) NULL,
+	[DataDrivenScheduleDetails] [nvarchar](4000) NULL,
+	[IsDataDrivenSchedule][bit] NOT NULL DEFAULT 0 )
 ;
 
 CREATE TABLE [BOLDRS_SubscribedUser](
@@ -349,7 +352,11 @@ CREATE TABLE [BOLDRS_ScheduleLog](
 	[ModifiedDate] [datetime] NOT NULL,
 	[Message] [nvarchar](max) NULL,
 	[IsOnDemand] [bit] NOT NULL DEFAULT (0),
-	[IsActive] [bit] NOT NULL)
+	[IsActive] [bit] NOT NULL,
+	[ExportFileName] [nvarchar](255) NULL,
+	[IsFileActive] [bit] NOT NULL,
+	[RowDetails] [nvarchar](max) NULL,
+	[IsDataDriven] [bit] NOT NULL DEFAULT (0))
 ;
 
 CREATE TABLE [BOLDRS_SystemSettings](
@@ -863,6 +870,34 @@ CREATE TABLE [BOLDRS_EmailActivityLog](
     [Status] [int] NOT NULL,
     [StatusMessage] [nvarchar](max) NULL,
     [IsActive] [bit] NOT NULL)
+;
+
+CREATE TABLE [BOLDRS_CustomEmailTemplate](
+[Id] [int] IDENTITY(1,1) primary key NOT NULL,
+[SiteId] [uniqueidentifier] NOT NULL,
+[IsEnabled] [bit] NULL,
+[DisclaimerContent] [nvarchar](255) NOT NULL,
+[HeaderContent] [nvarchar](255) NULL,
+[Subject] [nvarchar](255) NULL,
+[TemplateName] [nvarchar](255) NULL,
+[MailBody] [nvarchar](max) NOT NULL,
+[CreatedDate] [datetime] NOT NULL,
+[ModifiedDate] [datetime] NULL,
+[SendEmailAsHTML] [bit] NOT NULL,
+[CustomVisibilityOptions] [nvarchar](max) NOT NULL,
+[IsActive] [bit] NOT NULL,
+[TemplateId] [int] NOT NULL,
+[IsDefaultTemplate][bit] NOT NULL,
+[IsSystemDefault][bit] NOT NULL,
+[Description][nvarchar](255) NULL,
+[ModifiedBy][int] NOT NULL);
+
+CREATE TABLE [BOLDRS_ItemSettings](
+	[Id] [int] IDENTITY(1,1) primary key NOT NULL,
+	[ItemId] [uniqueidentifier] NOT NULL,
+	[ItemConfig] [nvarchar](4000) NULL,
+	[ModifiedDate] [datetime] NOT NULL,
+	[IsActive] [bit] NOT NULL)
 ;
 
 ---- PASTE INSERT Queries below this section --------
@@ -2108,6 +2143,9 @@ ALTER TABLE [BOLDRS_EmailActivityLog]  ADD  FOREIGN KEY([GroupId]) REFERENCES [B
 ALTER TABLE [BOLDRS_EmailActivityLog]  ADD  FOREIGN KEY([ItemId]) REFERENCES [BOLDRS_Item] ([Id])
 ;
 ALTER TABLE [BOLDRS_EmailActivityLog]  ADD FOREIGN KEY([CommentId]) REFERENCES [BOLDRS_Comment] ([Id])
+;
+
+ALTER TABLE [BOLDRS_ItemSettings] ADD CONSTRAINT FK_ItemSettings_ItemId FOREIGN KEY([ItemId]) REFERENCES [BOLDRS_Item] ([Id])
 ;
 
 

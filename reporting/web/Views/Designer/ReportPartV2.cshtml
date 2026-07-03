@@ -11,7 +11,7 @@
     var tenantAppConfiguration = new TenantAppConfiguration(globalAppSettings);
     var language = CultureInfo.CurrentCulture.Name;
     var baseUrl = globalAppSettings.SystemSettings.BaseUrl;
-    var reportServerApiUrl = ServerAppConfig.GetDesignerServiceEndPointUrl(new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl(), _globalAppSettings, Context);
+    var reportServerApiUrl = new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl();
     var tourCookie = Context.Request.Cookies["syncfusion.reports.designer.tour"];
     var tourObj = new TourCookie();
     var isSelfHosted = ServerAppConfig.IsSelfHosted;
@@ -250,6 +250,12 @@
             padding: 4px 0px;
         }
 
+        .e-rptdesigner-header-txtoverflow {
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
         .e-rptdesigner-header-design {
             border-bottom-left-radius: 4px;
             border-top-left-radius: 4px;
@@ -382,6 +388,7 @@
         var controlId = 'container';
         var isEditReport = false;
         var relativeDateTimer = null;
+        var reportPartNameTooltip = null;
         var reportPartId = "@ViewBag.ReportPartId";
         var reportPartName = decodeHtmlAsString("@reportPartName");
         var datasetName = "@ViewBag.datasetId";
@@ -424,7 +431,6 @@
             isEditReport = true;
         }
         var isSubmit = true;
-        var designerToken = "@ViewBag.AccessToken";
 
         $(document).ready(function () {
             var faviconLinkElement = document.getElementById("favicon-link");
@@ -511,7 +517,6 @@
                 reportPartSaved: $.proxy(reportPartSaved, this),
                 reportOpened: $.proxy(reportPartOpened, this),
                 reportPartOpened: $.proxy(reportPartOpened, this),
-                serviceAuthorizationToken: designerToken,
                 toolbarSettings: {
                     items: ej.ReportDesigner.ToolbarItems.All & ~ej.ReportDesigner.ToolbarItems.New
                         & ~ej.ReportDesigner.ToolbarItems.Open & ~ej.ReportDesigner.ToolbarItems.Save
@@ -603,9 +608,16 @@
             }
         }
 
+        function updateReportPartNameDisplay(name) {
+            $('#' + controlId + '_designer_header_reportPartName').text(name);
+            if (reportPartNameTooltip) {
+                reportPartNameTooltip.content = name;
+            }
+        }
+
         function controlInitialized(args) {
             var designer = $('#' + controlId).data('boldReportDesigner');
-            $('#' + controlId + '_designer_header_reportPartName').val(reportPartName);
+            updateReportPartNameDisplay(reportPartName);
             designer.showImportData = showImportSampleData;
             designer.isOnPremiseMode = !isCloudMode;
             designer.isReportPart = true;
@@ -744,7 +756,7 @@
                 }
                 var newTitle = reportPartName + ' - Design Report Part - ' + pageTitle;
                 document.title = newTitle;
-                $('#' + controlId + '_designer_header_reportPartName').val(reportPartName);
+                updateReportPartNameDisplay(reportPartName);
                 if (isDraft === 'false' && version) {
                     if(isHideGuidInUrl){
                         history.pushState('', newTitle, window.location.href.split("report-part")[0] + "report-part" + '/' + reportPartName + '?v=' + version);
@@ -850,80 +862,106 @@
                 designer.disposeViewerCache();
             }
 
+            if (reportPartNameTooltip) {
+                reportPartNameTooltip.destroy();
+                reportPartNameTooltip = null;
+            }
+
             isSubmit = true;
         }
 
         function renderDesignerHeader() {
+		    var backArrowOuterDivWidth = 30;
+			var reportNameOuterDivWidth = 200;
             var divouter = ej.buildTag('div.e-designer-header', '', {
                 'height': '40px',
                 'width': '100%',
-                'overflow': 'hidden',
                 'box-sizing': 'border-box',
                 'padding': '0px 10px',
-                'background': '#ffffff'
+                'background': '#ffffff',
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'space-between'
             },
                 {
                     'id': controlId + '_designer_header'
                 });
             $('#' + controlId).before(divouter);
+
+            var headerLeftDiv = ej.buildTag('div', '', {
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'flex-start',
+                'width': 'calc((100% - 20px) / 3)',
+                'column-gap': '10px'
+            }, {
+                'id': controlId + '_designer_header_left_div'
+            });
+
+            var headerCenterDiv = ej.buildTag('div', '', {
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'center',
+                'width': 'calc((100% - 20px) / 3)'
+            }, {
+                'id': controlId + '_designer_header_center_div'
+            });
+
+            var headerRightDiv = ej.buildTag('div', '', {
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'flex-end',
+                'width': 'calc((100% - 20px) / 3)'
+            }, {
+                'id': controlId + '_designer_header_right_div'
+            });
+
             var backArrowOuterDiv = ej.buildTag('div', '', {
                 'height': '100%',
-                'width': '30px',
-                'display': 'table',
-                'float': 'left'
+                'width': backArrowOuterDivWidth + 'px',
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'center'
             },
                 {
                     'id': controlId + '_designer_header_backarrow_div'
                 });
-            var backArrowInnerDiv = ej.buildTag('div', '', {
-                'display': 'table-cell',
-                'vertical-align': 'middle',
-                'text-align': 'center',
-                'padding-top': '2px'
-            });
             var backArrowEle = ej.buildTag(
                 'span.e-rptdesigner-headericon e-rptdesigner-data-icon e-reportdesigner-backarrow',
                 '',
                 {
-                    'padding': '5px',
                     'cursor': 'pointer'
                 },
                 {
                     'id': controlId + '_designer_header_backarrow'
                 });
-            backArrowOuterDiv.append(backArrowInnerDiv);
-            backArrowInnerDiv.append(backArrowEle);
+            backArrowOuterDiv.append(backArrowEle);
             backArrowEle.bind('click', backToServer);
             var reportNameOuterDiv = ej.buildTag('div', '', {
                 'height': '100%',
-                'width': '180px',
-                'display': 'table',
-                'float': 'left',
-                'padding': '0px 6px'
-            });
-            var reportNameInnerDiv = ej.buildTag('div', '', {
-                'display': 'table-cell',
-                'vertical-align': 'middle',
-                'text-align': 'center'
+                'width': reportNameOuterDivWidth + 'px',
+                'display': 'flex',
+                'align-items': 'center'
             });
             var rptNameEle = ej.buildTag(
-                'input',
-                '',
+                'span',
+                reportPartName,
                 {
+                    'font-size': '16px',
+                    'overflow': 'hidden',
+                    'text-overflow': 'ellipsis',
+                    'white-space': 'nowrap'
                 },
                 {
                     'id': controlId + '_designer_header_reportPartName',
-                    'spellcheck': 'false',
-                    'maxlength': '255'
+                    'spellcheck': 'false'
                 });
-            reportNameOuterDiv.append(reportNameInnerDiv);
-            reportNameInnerDiv.append(rptNameEle);
-            rptNameEle.bind('blur', textFocusOut);
-            rptNameEle.bind('keyup', textKeyup);
+            reportNameOuterDiv.append(rptNameEle);
             var draftDiv = ej.buildTag('div', '', {
                 'height': '100%',
+				'width': 'calc(100% - ' + (backArrowOuterDivWidth + reportNameOuterDivWidth) + 'px)',
                 'display': 'flex',
-                'float': 'left'
+                'align-items': 'center'
             }, {
                 'id': controlId + '_design_header_draft_div'
             });
@@ -937,36 +975,36 @@
                 {
                     'id': controlId + '_design_header_draft_icon'
                 });
-            var draftStatus = ej.buildTag('span.e-designer-draft-status-text e-designer-fontfamily', '',
-                {},
+            var draftStatus = ej.buildTag('span.e-designer-draft-status-text e-rptdesigner-txtoverflow e-designer-fontfamily', '',
+                {
+				    'width': '180px'
+				},
                 {
                     'id': controlId + '_design_header_draft_status'
                 });
             draftInnerDiv.append(draftIcon, draftStatus);
             draftDiv.append(draftInnerDiv);
             var designerViewDiv = ej.buildTag('div', '', {
-                'height': '40px',
-                'float': 'left',
-                'padding': '0px 10px',
-                'display': 'table',
-                'position': 'absolute',
-                'left': '45%'
+                'height': '100%',
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'center'
             }, {
                 'id': controlId + '_design_header_view_div'
             });
             var designerInnerDiv = ej.buildTag('div', '', {
-                'display': 'table-cell',
-                'vertical-align': 'middle'
+                'display': 'flex',
+                'align-items': 'center'
             });
             var designEle = ej.buildTag(
-                'span.e-rptdesigner-header-design e-userselect e-rptdesigner-header-selection e-designer-fontfamily',
+                'span.e-rptdesigner-header-design e-userselect e-rptdesigner-header-selection e-designer-fontfamily e-rptdesigner-header-txtoverflow',
                 "[[[Design]]]",
                 {},
                 {
                     'id': controlId + '_design_header_designview'
                 });
             var previewEle = ej.buildTag(
-                'span.e-rptdesigner-header-preview e-userselect e-designer-fontfamily',
+                'span.e-rptdesigner-header-preview e-userselect e-designer-fontfamily e-rptdesigner-header-txtoverflow',
                 "[[[Preview]]]",
                 {},
                 {
@@ -978,30 +1016,34 @@
             previewEle.bind('click', designViewChange);
             var publishContainer = ej.buildTag('div', '', {
                 'height': '100%',
-                'display': 'table',
-                'float': 'right'
+                'display': 'flex',
+                'align-items': 'center'
             }, {
                 'id': controlId + '_design_header_publish_div'
             });
             var publishDiv = ej.buildTag('div.e-rptdesigner e-publish-btn-wrapper', '', {
-                'display': 'table-cell',
-                'vertical-align': 'middle',
+                'display': 'flex',
+                'align-items': 'center',
+                'justify-content': 'center',
                 'text-align': 'center'
             });
-            var publishBtn = ej.buildTag('button.e-designer-fontfamily', '', {
-            }, {
+            var publishBtn = ej.buildTag('button.e-designer-fontfamily e-rptdesigner-header-txtoverflow', '', 
+            { 'width' : '70px' },
+            {
                 'id': controlId + '_design_header_publish_btn'
             });
             publishDiv.append(publishBtn);
             publishContainer.append(publishDiv);
-            divouter.append(backArrowOuterDiv, reportNameOuterDiv, draftDiv, designerViewDiv, publishContainer);
-            var rptPathTxtbox = new ejs.inputs.TextBox({
-                placeholder: "[[[Report Name]]]",
-                cssClass: 'e-textbox e-designer-fontfamily',
-                width: '180px'
-            });
-            rptPathTxtbox.appendTo(rptNameEle[0]);
+            headerLeftDiv.append(backArrowOuterDiv, reportNameOuterDiv, draftDiv);
+            headerCenterDiv.append(designerViewDiv);
+            headerRightDiv.append(publishContainer);
+            divouter.append(headerLeftDiv, headerCenterDiv, headerRightDiv);
 
+            reportPartNameTooltip = new ejs.popups.Tooltip({
+                content: reportPartName,
+                position: 'TopCenter'
+            });
+            reportPartNameTooltip.appendTo('#' + controlId + '_designer_header_reportPartName');        
             var items = [{ text: 'Publish As', value: 'reportpart' }];
             var splitButton = new ejs.splitbuttons.SplitButton({
                 items: items, content: 'Publish',
@@ -1041,7 +1083,7 @@
         }
 
         function updateReportPartName() {
-            var rprtName = $('#' + controlId + '_designer_header_reportPartName').val();
+            var rprtName = $('#' + controlId + '_designer_header_reportPartName').text();
             var designer = $('#' + controlId).data('boldReportDesigner');
             designer.reportFileName = (rprtName && rprtName.length > 0) ? rprtName : reportPartName;
         }

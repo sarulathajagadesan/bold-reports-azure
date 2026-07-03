@@ -9,14 +9,13 @@
     var globalAppSettings = _globalAppSettings;
     Layout = null;
     var itemDetails = ViewBag.itemDetails;
-    var token = ViewBag.AccessToken;
     var itemLocation = ViewBag.itemLocation;
     var itemId = itemDetails.Id;
     var itemName = HttpUtility.HtmlDecode(itemDetails.Name);
     var description = HttpUtility.HtmlDecode(itemDetails.Description);
     var permissionDetails = ViewBag.permissionDetails;
     var CanWrite = permissionDetails != null ? permissionDetails[0].CanWrite : false;
-    var reportServerApiUrl = ServerAppConfig.GetDesignerServiceEndPointUrl(new ReportServerApiEndPoints(globalAppSettings, true, true).ReportServerApiUrl(), _globalAppSettings, Context);
+    var reportServerApiUrl = new ReportServerApiEndPoints(globalAppSettings, true, true).ReportServerApiUrl();
     var reportServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var xmlContent = ViewBag.xmlContent;
     var faviconFallbackPath = reportServerResourceUrl + "/cdn/images/application/" + ServerAppConfig.AppSettings.AppBranding.Identifier + "/" + IconFileNames.Favicon;
@@ -60,6 +59,7 @@
         createXmlSpinner();
         var originalXmlContent = @Html.Raw(JsonConvert.SerializeObject(xmlContent));
         var landingPageUrl = '@Url.Action("DataSources", "DataSources")';
+        var updateDataSourceUrl = '@Url.Action("UpdateXMLDataSource", "DataSources")';
         var shouldRunBeforeUnload = true;
 
         var editor = createXMLEditor("datasource_xml_editor", originalXmlContent);
@@ -104,12 +104,9 @@
             };
 
             $.ajax({
-                url: reportServerApiUrl + '/v2.0/data-sources',
+                url: updateDataSourceUrl,
                 type: 'PUT',
                 data: JSON.stringify(payload),
-                headers: {
-                    'Authorization': "@token"
-                },
                 contentType: 'application/json',
                 success: function (data) {
                     if (data && data.ApiStatus === true) {

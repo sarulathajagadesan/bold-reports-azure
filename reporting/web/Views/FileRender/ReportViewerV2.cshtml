@@ -53,6 +53,8 @@
     var isUseFontsFromDirectory = ViewBag.IsUseFontsFromDirectory;
     var GoogleTagManagerHeadScript = ServerAppConfig.GoogleTagManagerHeadScript;
     var GoogleTagManagerBodyScript = ServerAppConfig.GoogleTagManagerBodyScript;
+    var decryptedExtendedAttributes = ViewBag.DecryptedExtendedAttributes;
+    var decryptedParameters = ViewBag.DecryptedParameters;
 }
 <!DOCTYPE html>
 <html style="height: 100%">
@@ -166,6 +168,10 @@
         var schemesDetails = @schemesJson;
         var isSelfHosted = @Json.Serialize(ServerAppConfig.IsSelfHosted);
         var enableRenderSameTab = @ServerAppConfig.SameTabReportRender.ToString().ToLower();
+
+        var decryptedExtendedAttributes = @Json.Serialize(decryptedExtendedAttributes);
+        var decryptedParameters = @Json.Serialize(decryptedParameters != null ? System.Text.Json.JsonSerializer.Deserialize<object>(decryptedParameters) : null);
+
         if (isCommonCacheEnabled){
             dateFormat = "@globalAppSettings.SystemSettings.DateFormat";
             timeFormat = @Json.Serialize(globalAppSettings.SystemSettings.TimeFormat) ? "HH:mm" : "hh:mm tt";

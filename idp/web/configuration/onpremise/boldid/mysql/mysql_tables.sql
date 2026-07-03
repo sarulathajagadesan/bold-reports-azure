@@ -317,7 +317,7 @@ CREATE TABLE {database_name}.BOLDTC_SAMLSettings (
 CREATE TABLE {database_name}.BOLDTC_SystemSettings (
 	Id int NOT NULL AUTO_INCREMENT,
 	SystemKey nvarchar(255) NOT NULL UNIQUE,
-	SystemValue nvarchar(4000),
+	SystemValue longtext,
 	ModifiedDate datetime NOT NULL,
 	IsActive tinyint(1) NOT NULL,
   CONSTRAINT PK_BOLDTC_SYSTEMSETTINGS PRIMARY KEY 

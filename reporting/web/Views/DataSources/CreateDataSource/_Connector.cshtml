@@ -1,7 +1,6 @@
 ﻿@using System.Globalization;
 @{
     var globalAppSettings = _globalAppSettings;
-    var designerToken = ViewBag.AccessToken;
     var reportServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var language = CultureInfo.CurrentCulture.Name;
 }
@@ -10,7 +9,7 @@
 </script>
 <div class="cd-connector-container">
 
-    <div class="dc-container" ng-controller="connectorCtrl">
+    <div class="dc-container">
         <div class="dc-scroller-container rs-scroller">
             <div class="dc-scroller">
             <div class="dc-header-container">
@@ -25,14 +24,14 @@
 #else
                             string serviceURL = ServerAppConfig.GetDesignerServiceEndPointUrl(ServerAppConfig.InternalAppDataServiceUrl, _globalAppSettings, Context) +"/api/Designer";
 #endif
-                            string reportServerApiUrl = ServerAppConfig.GetDesignerServiceEndPointUrl(new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl(), _globalAppSettings, Context);
+                            string reportServerApiUrl = new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl();
                             string isAzureApplication = ServerAppConfig.IsAzureApplication.ToString().ToLower();
                         }
                         <div class="data-designer-container">
-                            <div id="dataDesigner" ng-style="{'display': datasetCreation ? 'none' : 'block'}" boldReportDesigner e-serviceUrl="@serviceURL" e-reportServerUrl="@reportServerApiUrl" e-isAzureApp=@isAzureApplication e-reportDataExtensions="reportDataExtensions" e-create="onDesignerCreate" e-ajaxBeforeLoad="onAjaxBeforeLoad" e-encryptData="encryptData" e-decryptData="decryptData" e-serviceAuthorizationToken="@designerToken" e-locale ="@language">
+                            <div id="dataDesigner" style="display: block;">
                                 <div class="dataContainer e-reportdesigner-designer-configuration"></div>
                             </div>
-                            <div class="dc-dataset-form-container" ng-style="{'display': !datasetCreation ? 'none' : 'block'}">
+                            <div class="dc-dataset-form-container" style="display: none;">
                                 @{ await Html.RenderPartialAsync("~/Views/Items/_DataSetForm.cshtml"); }
                             </div>
                         </div>

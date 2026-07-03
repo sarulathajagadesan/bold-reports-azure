@@ -66,7 +66,7 @@
     @if (itemsCount != null && itemsCount.ContainsKey(ItemType.Dataset) && itemsCount[ItemType.Dataset] > 0)
     {
         @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", "[[[DATASETS]]]" } })
-        <div id="item-grid-container" data-grid-name="datasets" class="admin-page-container" ng-controller="itemsCtrl" style="padding: 80px 20px 20px 30px;">
+        <div id="item-grid-container" data-grid-name="datasets" class="admin-page-container" style="padding: 80px 20px 20px 30px;">
             <input type="hidden" class="page-name" data-content="[[[DATASETS]]]">
             @if (!isMobile)
             {

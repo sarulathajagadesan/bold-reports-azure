@@ -112,7 +112,7 @@
              <param name="tenantName"></param>
              <returns></returns>
         </member>
-        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.TenantCopy(System.Guid,System.Guid,System.String,System.String,System.Boolean)">
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.TenantCopy(System.Guid,System.Guid,System.String,System.String,System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSetMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSourceMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.CopySubReportMappingInfoV4},System.Boolean)">
              <summary>
             
              </summary>
@@ -372,11 +372,63 @@
             </summary>
             <returns></returns>
         </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.FileRenderController.DecryptExtendedAttribute(System.Uri)">
+            <summary>
+            Reads the <c>extended_attribute</c> query parameter from the request URL, decrypts it
+            using the server's <see cref="T:Syncfusion.Server.Base.Encryption.TokenCryptography"/> keys, validates the resulting JSON as
+            an object with string keys and string values, and returns the serialised JSON string for
+            the view. Returns <c>null</c> when the parameter is absent or invalid.
+            </summary>
+            <remarks>
+            Maximum allowed decrypted payload length is 8192 characters to prevent DoS.
+            URL-safe base64 characters (<c>-</c> → <c>+</c>, <c>_</c> → <c>/</c>) are normalised
+            before decryption.
+            </remarks>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.FileRenderController.DecryptParameter(System.Uri)">
+            <summary>
+            Reads the <c>parameter</c> query parameter from the request URL, decrypts it using the
+            server's <see cref="T:Syncfusion.Server.Base.Encryption.TokenCryptography"/> keys, validates the resulting JSON as an array of
+            report parameter objects (each requiring <c>name</c>, <c>labels</c>, <c>values</c>, and
+            <c>nullable</c>), and returns the serialised JSON string for the view. Returns <c>null</c>
+            when the parameter is absent or invalid.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.FileRenderController.NormaliseBase64(System.String)">
+            <summary>
+            Normalises a URL-safe base64 string to standard base64 and adds padding as required.
+            </summary>
+        </member>
         <member name="M:Syncfusion.Server.Reports.Controllers.SchedulerController.GetRecurrenceType(System.String)">
             <summary>
             Get the enum values.
             </summary>
             <returns>Json Result of the operation</returns>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.SchedulerController.GetDatasetsByDatasource(System.String)">
+            <summary>
+            Returns datasets associated with the given datasource by querying the DatasetLinkage table
+            joined with the Items table to retrieve dataset Id and Name.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.SchedulerController.GetDatasetSchema(System.String,System.String)">
+            <summary>
+            Fetches the schema (column list) for the selected DataSource + Dataset combination
+            by reading their file bytes, encoding as Base64, and calling the Designer API /v1.0/schema.
+            Also stores the schema in session for use in subsequent partial view loads.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.SchedulerController.StoreDatasetSchema(System.String,System.String)">
+            <summary>
+            No-op endpoint retained for API compatibility.
+            Schema is no longer cached; use get-dataset-schema to fetch columns on demand.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.SchedulerController.ClearDatasetSchema">
+            <summary>
+            No-op endpoint retained for API compatibility.
+            Schema is no longer stored in session; columns are fetched on demand per request.
+            </summary>
         </member>
         <member name="M:Syncfusion.Server.Reports.Controllers.UserController.UserPermission">
             <summary>

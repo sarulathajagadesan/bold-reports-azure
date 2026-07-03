@@ -58,15 +58,48 @@
             </div>
         </div>
     </div>
+
+    <!-- Row-level drill-down popup for data-driven Partially Completed / Failed runs -->
+    <div id="ScheduleRowDetails" class="fluent-popup custom-bootstrap-styles custom-server-style no-padding" style="display: none">
+        <div class="fluent-popup-header col-12 no-padding">
+            <h4 class="popup-title">
+                <span class="su su-info"></span>
+                <span>[[[Row Execution Details]]]</span>
+                <button type="button" title="[[[Close]]]" class="btn-close popup-close close-row-details float-end" aria-label="Close">
+                    <span class="su su-close"></span>
+                </button>
+            </h4>
+        </div>
+        <div class="fluent-item-popup-body col-12">
+            <table class="table table-sm" id="row-details-table">
+                <thead>
+                    <tr>
+                        <th>[[[Row]]]</th>
+                        <th>[[[Row ID]]]</th>
+                        <th>[[[Status]]]</th>
+                        <th>[[[Message]]]</th>
+                    </tr>
+                </thead>
+                <tbody id="row-details-body"></tbody>
+            </table>
+        </div>
+        <div class="fluent-popup-footer col-12">
+            <div class="col-12 no-padding">
+                <button class="app-button app-secondary-button app-btn-secondary close-row-details" title="[[[Close]]]">[[[Close]]]</button>
+            </div>
+        </div>
+    </div>
 </body>
 <script nonce="@Context.Items["ScriptNonce"]" type="text/x-jsrender" id="execution_type">
     <div class="grid-content" title="{{:ExecutionType}}" data-bs-toggle="tooltip">{{:ExecutionType}}</div>
 </script>
 <script nonce="@Context.Items["ScriptNonce"]" type="text/x-jsrender" id="schedule_status">
     {{if Status == "Failed"}}
-    <span><a id="on-failure-status" class="grid-content" href="#">{{:Status}}</a></span>
+    <span><a id="on-failure-status" class="grid-content schedule-status-link" href="#">{{:Status}}</a></span>
+    {{else Status == "[[[Partially Completed]]]" || Status == "Partially Completed"}}
+    <span><a id="on-partial-status" class="grid-content schedule-status-link schedule-partial-status" href="#">{{:Status}}</a></span>
     {{else}}
-<div class="grid-content" title="{{:Status}}" data-bs-toggle="tooltip">{{:Status}}</div>
+    <div class="grid-content" title="{{:Status}}" data-bs-toggle="tooltip">{{:Status}}</div>
     {{/if}}
 </script>
 <script nonce="@Context.Items["ScriptNonce"]" type="text/x-jsrender" id="schedule_message">

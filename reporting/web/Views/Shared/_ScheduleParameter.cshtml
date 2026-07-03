@@ -98,10 +98,20 @@
                             </select>
                         </div>
                         <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                            <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                            <input type="text" class="@hasdependent form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
                             <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title="Invalid expression. Please enter a valid expression."> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
                         </div>
+                        <div id="@parameter.Name-dataset"
+                             class="col-sm-4 col-4 parameter-input"
+                             style="display:none">
 
+                            <select class="form-control selectpicker dataset-column-select"
+                                    id="@parameter.Name-dataset-select"
+                                    data-param="@parameter.Name"
+                                    title="Select dataset column">
+                            </select>
+
+                        </div>
 
                     }
                     else
@@ -119,8 +129,19 @@
                             </select>
                         </div>
                         <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                           <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
-                           <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            <input type="text" class="@hasdependent form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                            <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                        </div>
+                        <div id="@parameter.Name-dataset"
+                             class="col-sm-4 col-4 parameter-input"
+                             style="display:none">
+
+                            <select class="form-control selectpicker dataset-column-select"
+                                    id="@parameter.Name-dataset-select"
+                                    data-param="@parameter.Name"
+                                    title="Select dataset column">
+                            </select>
+
                         </div>
 
                     }
@@ -142,8 +163,19 @@
                         </div>
 
                         <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                            <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
-                           <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            <input type="text" class="@hasdependentboolValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                            <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                        </div>
+                        <div id="@parameter.Name-dataset"
+                             class="col-sm-4 col-4 parameter-input"
+                             style="display:none">
+
+                            <select class="form-control selectpicker dataset-column-select"
+                                    id="@parameter.Name-dataset-select"
+                                    data-param="@parameter.Name"
+                                    title="Select dataset column">
+                            </select>
+
                         </div>
                     }
                     else
@@ -160,8 +192,19 @@
                         </div>
 
                         <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                            <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
-                           <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            <input type="text" class="@hasdependentboolValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                            <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                        </div>
+                        <div id="@parameter.Name-dataset"
+                             class="col-sm-4 col-4 parameter-input"
+                             style="display:none">
+
+                            <select class="form-control selectpicker dataset-column-select"
+                                    id="@parameter.Name-dataset-select"
+                                    data-param="@parameter.Name"
+                                    title="Select dataset column">
+                            </select>
+
                         </div>
 
                     }
@@ -176,8 +219,19 @@
                         </div>
 
                         <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                            <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
-                           <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            <input type="text" class="@hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                            <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                        </div>
+                        <div id="@parameter.Name-dataset"
+                             class="col-sm-4 col-4 parameter-input"
+                             style="display:none">
+
+                            <select class="form-control selectpicker dataset-column-select"
+                                    id="@parameter.Name-dataset-select"
+                                    data-param="@parameter.Name"
+                                    title="Select dataset column">
+                            </select>
+
                         </div>
                     }
                     else
@@ -187,8 +241,8 @@
                         </div>
 
                         <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                            <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
-                           <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            <input type="text" class="@hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                            <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
                         </div>
                     }
                 }
@@ -199,23 +253,43 @@
                         if (isAdmin || itemPermission)
                         {
                             <div class="col-sm-4 col-4 parameter-input parameter-text">
-                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",", parameter.Values.Count> 0? new List<string>() : parameter.Values.ToList())" @(isParameterHidden ? "disabled" : "")>
+                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",", parameter.Values.Count > 0 ? new List<string>() : parameter.Values.ToList())" @(isParameterHidden ? "disabled" : "")>
                             </div>
 
                             <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                                <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
-                               <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                                <input type="text" class="@hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                                <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            </div>
+                            <div id="@parameter.Name-dataset"
+                                 class="col-sm-4 col-4 parameter-input"
+                                 style="display:none">
+                                <select class="form-control selectpicker dataset-column-select"
+                                        id="@parameter.Name-dataset-select"
+                                        data-param="@parameter.Name"
+                                        title="Select dataset column">
+                                </select>
                             </div>
                         }
                         else
                         {
                             <div class="col-sm-4 col-4 parameter-input parameter-text" style="display:@showHiddenParameter;">
-                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",", parameter.Values.Count> 0? new List<string>() : parameter.Values.ToList())" @(isParameterHidden ? "disabled" : "")>
+                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",", parameter.Values.Count > 0 ? new List<string>() : parameter.Values.ToList())" @(isParameterHidden ? "disabled" : "")>
                             </div>
 
                             <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
-                                <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
-                               <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                                <input type="text" class="@hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                                <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            </div>
+                            <div id="@parameter.Name-dataset"
+                                 class="col-sm-4 col-4 parameter-input"
+                                 style="display:none">
+
+                                <select class="form-control selectpicker dataset-column-select"
+                                        id="@parameter.Name-dataset-select"
+                                        data-param="@parameter.Name"
+                                        title="Select dataset column">
+                                </select>
+
                             </div>
                         }
                     }
@@ -224,13 +298,39 @@
                         if (isAdmin || itemPermission)
                         {
                             <div class="col-sm-4 col-4 parameter-input parameter-text">
-                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",",  new List<string>() )" @(isParameterHidden ? "disabled" : "")>
+                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",", new List<string>())" @(isParameterHidden ? "disabled" : "")>
+                            </div>
+                            <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
+                                <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                                <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            </div>
+                            <div id="@parameter.Name-dataset"
+                                 class="col-sm-4 col-4 parameter-input"
+                                 style="display:none">
+                                <select class="form-control selectpicker dataset-column-select"
+                                        id="@parameter.Name-dataset-select"
+                                        data-param="@parameter.Name"
+                                        title="Select dataset column">
+                                </select>
                             </div>
                         }
                         else
                         {
                             <div class="col-sm-4 col-4 parameter-input parameter-text" style="display:@showHiddenParameter;">
-                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",",  new List<string>() )" @(isParameterHidden ? "disabled" : "")>
+                                <input type="text" class="@hasdependentValue form-control" id="@parameter.Name" name="@parameter.Name" dataType="@parameter.DataType" value="@String.Join(",", new List<string>())" @(isParameterHidden ? "disabled" : "")>
+                            </div>
+                            <div id="@parameter.Name-expression" class="col-sm-4 col-4 expression-input input-group" style="display:none">
+                                <input type="text" class="hasdependentValue form-control use-expression" id="@parameter.Name-use-expression" name="@parameter.Name" placeholder="=Expression" autocomplete="off">
+                                <span id="@parameter.Name-info-icon" class="expression-input-icon input-group-text text-danger" style="display:none; cursor:pointer;" data-bs-toggle="tooltip" data-bs-placement="right" title=""> <i class="su su-info text-danger" style="font-size: 11px !important;"></i> </span>
+                            </div>
+                            <div id="@parameter.Name-dataset"
+                                 class="col-sm-4 col-4 parameter-input"
+                                 style="display:none">
+                                <select class="form-control selectpicker dataset-column-select"
+                                        id="@parameter.Name-dataset-select"
+                                        data-param="@parameter.Name"
+                                        title="Select dataset column">
+                                </select>
                             </div>
                         }
                     }
@@ -267,35 +367,59 @@
 </body>
 </html>
 <script nonce="@ViewBag.Nonce">
-     var isAdmin=@Json.Serialize(isAdmin);
-     var itemPermission= @Json.Serialize(itemPermission);
-     var reportId = @Json.Serialize(ViewBag.ReportId);
-     window.parameterObj = @Json.Serialize(Model);
-     window.reportparameterObj = @Json.Serialize(ViewBag.ReportParameter);
-     window.defaultValue = @Html.Raw(Json.Serialize(ViewBag.ParameterDefaultValues));
-     window.reportParamType = {
-         Boolean: @((int)ParamType.Boolean),
-         DateTime:  @((int)ParamType.DateTime),
-         Float:  @((int)ParamType.Float),
-         Integer: @((int)ParamType.Integer),
-         String:  @((int)ParamType.String),
-     };
-     window.reportElementType = {
-         MultiValue:  @((int)ElementType.MultiValue),
-         RadioButton: @((int)ElementType.RadioButton),
-         DateTime: @((int)ElementType.DateTime),
-         ComboBox: @((int)ElementType.ComboBox),
-         Textbox: @((int)ElementType.Textbox),
-         Checkbox: @((int)ElementType.Checkbox),
-     };
-     window.reportParameterType = {
-         String: @((int)BoldReports.RDL.DOM.DataTypes.String),
-         Boolean:  @((int)BoldReports.RDL.DOM.DataTypes.Boolean),
-         DateTime:  @((int)BoldReports.RDL.DOM.DataTypes.DateTime),
-         Integer: @((int)BoldReports.RDL.DOM.DataTypes.Integer),
-         Float:  @((int)BoldReports.RDL.DOM.DataTypes.Float),
-         Decimal: @((int)BoldReports.RDL.DOM.DataTypes.Decimal),
-     };
+    var isAdmin=@Json.Serialize(isAdmin);
+    var itemPermission= @Json.Serialize(itemPermission);
+    var reportId = @Json.Serialize(ViewBag.ReportId);
+    window.parameterObj = @Json.Serialize(Model);
+    window.reportparameterObj = @Json.Serialize(ViewBag.ReportParameter);
+    window.defaultValue = @Html.Raw(Json.Serialize(ViewBag.ParameterDefaultValues));
+    window.reportParamType = {
+        Boolean: @((int)ParamType.Boolean),
+        DateTime:  @((int)ParamType.DateTime),
+        Float:  @((int)ParamType.Float),
+        Integer: @((int)ParamType.Integer),
+        String:  @((int)ParamType.String),
+    };
+    window.reportElementType = {
+        MultiValue:  @((int)ElementType.MultiValue),
+        RadioButton: @((int)ElementType.RadioButton),
+        DateTime: @((int)ElementType.DateTime),
+        ComboBox: @((int)ElementType.ComboBox),
+        Textbox: @((int)ElementType.Textbox),
+        Checkbox: @((int)ElementType.Checkbox),
+    };
+    window.reportParameterType = {
+        String: @((int)BoldReports.RDL.DOM.DataTypes.String),
+        Boolean:  @((int)BoldReports.RDL.DOM.DataTypes.Boolean),
+        DateTime:  @((int)BoldReports.RDL.DOM.DataTypes.DateTime),
+        Integer: @((int)BoldReports.RDL.DOM.DataTypes.Integer),
+        Float:  @((int)BoldReports.RDL.DOM.DataTypes.Float),
+        Decimal: @((int)BoldReports.RDL.DOM.DataTypes.Decimal),
+    };
+
+    // Data-Driven Schedule: Store schema columns from controller ViewBag
+    @{
+            var schemaList = ViewBag.SchemaList as List<object>;
+            if (schemaList != null && schemaList.Count > 0)
+            {
+                    var schemaColumns = new List<string>();
+                    foreach (var schema in schemaList)
+                    {
+                            dynamic schemaObj = schema;
+                            string columnName = schemaObj.Name ?? schemaObj.ToString();
+                            schemaColumns.Add(columnName);
+                    }
+                    <text>
+                   window.datasetSchemaColumns = @Html.Raw(JsonConvert.SerializeObject(schemaColumns));
+                    </text>
+            }
+            else
+            {
+                    <text>
+                window.datasetSchemaColumns = [];
+                    </text>
+            }
+    }
 </script>
 <environment include="Development,CloudDevelopment">
     <script nonce="@ViewBag.Nonce" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/scheduleparameter.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/scheduleparameter.js")" crossorigin="anonymous"></script>

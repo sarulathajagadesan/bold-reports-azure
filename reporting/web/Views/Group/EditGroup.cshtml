@@ -9,10 +9,17 @@
     var reportServerResourceUrl = globalAppSettings.SystemSettings.CDNLink.TrimEnd('/');
     var granularPermissions = ViewBag.GranularPermissions as Dictionary<object, bool>;
     var isAdmin = _identityResponse.IsAdmin;
+    var groupDetails = ViewBag.groupDetails;
     var isEmailRequired = globalAppSettings.SystemSettings.IsEmailRequired;
     var passwordPolicy = ServerAppConfig.PasswordPolicy;
     var isSelfHosted = ServerAppConfig.IsSelfHosted;
     bool isSingleDB = ViewBag.IsSingleDB;
+    var customUI = _globalAppSettings.SystemSettings.CustomUI;
+    var userImport = new UserImport();
+    if (customUI?.Profiles != null)
+    {
+        userImport = customUI?.Profiles[0]?.UserImport != null ? customUI?.Profiles[0]?.UserImport[0] : new UserImport();
+    }
 }
 
 @section scripts{
@@ -39,10 +46,6 @@
         var deleteGroupViewUrl = "@Url.Action("DeleteGroupView", "Group")";
         var deleteGroupUserViewUrl = "@Url.Action("DeleteGroupUserView", "Group")";
         var addUserInGroupUrl = "@Url.Action("AddUserInGroup", "Group")";
-        var groupDetails = @Json.Serialize(ViewBag.groupDetails);
-        groupDetails.GroupName = decodeHtmlAsString(groupDetails.GroupName);
-        groupDetails.GroupDescription = decodeHtmlAsString(groupDetails.GroupDescription);
-        var allUsers = @Json.Serialize(ViewBag.allUser);
         var groupId =@Context.Request.Query["groupId"];
         var checkMailSettingUrl = "@Url.Action("checkmailsettingsexist", "Administration")";
         var postactionUrl = "@Url.Action("postaction", "UserManagement")";
@@ -51,12 +54,6 @@
         var isEmailRequired = "@isEmailRequired";
         var groupPageNonce = "@Context.Items["ScriptNonce"]";
         var isSingleDB = @isSingleDB.ToString().ToLower();
-        serverApp.controller("GroupEditController", function ($scope) {
-            $scope.selectedRow = 1;
-            $scope.page = 0;
-            $scope.allGroupDetails = groupDetails;
-            $scope.allUsers = allUsers;
-        });
         $(document).ready(function () {
             var groupNameInput = document.getElementById('group-info-name');
             // Add the 'disabled' attribute if the condition is true
@@ -202,7 +199,7 @@
         {{/if}}
     </script>
 
-    <div id="base-container" role="tabpanel" class="admin-page-container float-end col-lg-12" ng-app="serverApp" ng-controller="GroupEditController">
+    <div id="base-container" role="tabpanel" class="admin-page-container float-end col-lg-12">
         <div id="group-header" class="row align-items-center admin-page-header import-area">
             <!-- Left Side: Back Arrow + Group Name -->
             <div class="col-md-6 d-flex align-items-center p-0 flex-wrap">
@@ -211,10 +208,8 @@
                    data-bs-toggle="tooltip" data-bs-placement="top" title="[[[View Group]]]">
                     <i class="su su-arrow-back back-navigaion img-size"></i>
                 </a>
-                <h2 class="page-title adjust-style-for-backarrow header m-0"
-                    ng-bind="allGroupDetails.GroupName"
-                    title="{{allGroupDetails.GroupName}}"
-                    maxlength="60">
+                <h2 id="group-heading-name" class="page-title adjust-style-for-backarrow header m-0"
+                    title="@groupDetails.GroupName">@groupDetails.GroupName
                 </h2>
             </div>
 
@@ -229,33 +224,36 @@
                     </button>
 
                     <ul class="dropdown-menu manage-group-dropdown multi-level" role="menu" id="dropdown-options">
-                        @if (ViewBag.IsLocalDirectory)
+                        @if (!userImport.HideAddUser)
                         {
-                            <feature name=@FeatureManagement.Yokogawa>
-                                <li id="add-user-button" title="[[[Add user]]]">
-                                    <a href="#" class="dropdown-item prevent-default-action"
-                                       data-bs-toggle="tooltip" data-bs-placement="top"
-                                       title="[[[Add user]]]">
-                                        <i class="su su-user-add me-2"></i>
-                                        <span>[[[Add User]]]</span>
-                                    </a>
-                                </li>
+                            @if (ViewBag.IsLocalDirectory)
+                            {
+                                <feature name=@FeatureManagement.Yokogawa>
+                                    <li id="add-user-button" title="[[[Add user]]]">
+                                        <a href="#" class="dropdown-item prevent-default-action"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="[[[Add user]]]">
+                                            <i class="su su-user-add me-2"></i>
+                                            <span>[[[Add User]]]</span>
+                                        </a>
+                                    </li>
+                                </feature>
+                            }
+
+                            <feature name=@FeatureManagement.Yokogawa negate="true">
+                                @if ((isAdmin || granularPermissions[PermissionEntity.UsersandGroups]) && ViewBag.IsLocalDirectory)
+                                {
+                                    <li id="add-user-button" title="[[[Add user]]]">
+                                        <a href="#" class="dropdown-item prevent-default-action"
+                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                        title="[[[Add user]]]">
+                                            <i class="su su-user-add me-2"></i>
+                                            <span>[[[Add User]]]</span>
+                                        </a>
+                                    </li>
+                                }
                             </feature>
                         }
-
-                        <feature name=@FeatureManagement.Yokogawa negate="true">
-                            @if ((isAdmin || granularPermissions[PermissionEntity.UsersandGroups]) && ViewBag.IsLocalDirectory)
-                            {
-                                <li id="add-user-button" title="[[[Add user]]]">
-                                    <a href="#" class="dropdown-item prevent-default-action"
-                                       data-bs-toggle="tooltip" data-bs-placement="top"
-                                       title="[[[Add user]]]">
-                                        <i class="su su-user-add me-2"></i>
-                                        <span>[[[Add User]]]</span>
-                                    </a>
-                                </li>
-                            }
-                        </feature>
 
                         <feature name=@FeatureManagement.Yokogawa>
                             @if (ViewBag.IsLocalDirectory && Convert.ToInt32(Context.Request.Query["groupId"]) != 1)
@@ -263,7 +261,7 @@
                                 <li id="add-owner-button"
                                     title="[[[Add Owner]]]"
                                     data-groupid="@Context.Request.Query["groupId"]"
-                                    data-groupname="{{allGroupDetails.GroupName}}">
+                                    data-groupname="@groupDetails.GroupName">
                                     <a href="#" class="dropdown-item prevent-default-action"
                                        data-bs-toggle="tooltip" data-bs-placement="top"
                                        title="[[[Add Owner]]]">
@@ -292,7 +290,7 @@
                             <li id="delete-button" class="delete"
                                 title="[[[Delete Group]]]"
                                 data-groupid="@Context.Request.Query["groupId"]"
-                                data-groupname="{{allGroupDetails.GroupName}}">
+                                data-groupname="@groupDetails.GroupName">
                                 <a href="#" class="dropdown-item prevent-default-action"
                                    data-bs-toggle="tooltip" data-bs-placement="top"
                                    title="[[[Delete Group]]]">
@@ -311,14 +309,14 @@
                 <div class="row">
                     <div class="group-info-label col-2 float-end text-right">[[[Name]]]<span class="mandatory">*</span></div>
                     <div class="group-info-text col-md-6 float-end" id="group-name">
-                        <input type="text" autocomplete="off" placeholder="[[[Group name]]]" name="groupname" ng-bind="allGroupDetails.GroupName" ng-value="allGroupDetails.GroupName" class="form-control NotificationContent" maxlength="60" id="group-info-name" />
+                        <input type="text" autocomplete="off" placeholder="[[[Group name]]]" name="groupname" value="@groupDetails.GroupName" class="form-control NotificationContent" maxlength="60" id="group-info-name" />
                         <span id="invalid-groupname" class="error-message" title="[[[Please enter group name]]]" data-content=""></span>
                     </div>
                 </div>
                 <div class="row">
                     <div class="group-info-label col-md-2 col-2 float-end text-right ">[[[Description]]]</div>
                     <div class="group-info-text col-md-6 float-end">
-                        <textarea class="form-control notification-content" maxlength="1024" id="group-info-description" ng-bind="allGroupDetails.GroupDescription"></textarea>
+                        <textarea class="form-control notification-content" maxlength="1024" id="group-info-description">@groupDetails.GroupDescription</textarea>
                         <div id="required-content">
                             [[[*1024 characters maximum]]]
                         </div>
@@ -336,7 +334,13 @@
                     <span style="" class="user-list-text">[[[Add user]]] :</span>
                     <div id="user-list-container">
                         <select class="selectpicker" multiple autofocus="" data-size="8" data-none-results-text="[[[No results match]]]" data-live-search="true" data-actions-box="true" title='[[[Select user(s)]]]' id="user-list" style="float: right;">
-                            <option ng-repeat="user in allUsers| orderBy:'DisplayName'" value="{{user.UserId}}" title="{{user.DisplayName}}">{{user.DisplayName}}</option>
+                            @{
+                                var allUsersList = ((System.Collections.IEnumerable)ViewBag.allUser)?.Cast<dynamic>().OrderBy(u => (string)u.DisplayName) ?? Enumerable.Empty<dynamic>();
+                            }
+                            @foreach (var user in allUsersList)
+                            {
+                                <option value="@user.UserId" title="@user.DisplayName">@user.DisplayName</option>
+                            }
                         </select>
                     </div>
                     <input id="user-save-button" disabled="" title="[[[Add selected user(s) to the group]]]" class="group-save-button primary-button app-btn-primary" type="button" value="[[[Add]]]" name="save" />

@@ -408,6 +408,13 @@
             <param name="apiReportAddV6">Report details</param>
             <returns>The response is sent as ApiItemResponse object</returns>
         </member>
+        <member name="M:Syncfusion.Server.API.Controllers.ItemsController.CopyMultipleReportToTenant(System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.ApiReportAddV6})">
+            <summary>
+            Add report.
+            </summary>
+            <param name="apiReportAddV6">Report details</param>
+            <returns>The response is sent as ApiItemResponse object</returns>
+        </member>
         <member name="M:Syncfusion.Server.API.Controllers.ItemsController.AddDataSource(Syncfusion.Server.Base.DataClasses.ApiReportDataSourceAdd)">
             <summary>
             Add a new datasource to the server.
@@ -649,7 +656,7 @@
             <param name="apiSampleReportAdd">Details about the sample report passed will be added to the server.</param>
             <returns>The response is sent as ApiResponse object</returns>
         </member>
-        <member name="M:Syncfusion.Server.API.Controllers.PermissionController.GetUserPermission(System.Int32)">
+        <member name="M:Syncfusion.Server.API.Controllers.PermissionController.GetUserPermissions(System.String)">
             <summary>
             Return list of permissions of user
             </summary>
@@ -1161,6 +1168,14 @@
             </summary>
             <param name="copySubReportMappingInfosV4">copySubReportMappingInfosV4 which is saved as an report reference in the report</param>
         </member>
+        <member name="M:Syncfusion.Server.API.Models.ReportServer.Designer.RunReportWithProcessor(Syncfusion.Server.Base.DataClasses.ItemRequest,Syncfusion.Server.Base.DataClasses.ExportFileSetting,Syncfusion.Server.Base.Scheduler.ScheduleJobProcessor,System.Threading.CancellationToken)">
+            <summary>
+            Executes an export using the supplied <paramref name="processor"/> instance.
+            Keeping the processor as a parameter allows the caller (e.g. the V5 timeout path)
+            to cancel the underlying <see cref="!:ReportWriter"/> via
+            <see cref="M:Syncfusion.Server.Base.Scheduler.ScheduleJobProcessor.CancelExport"/> if the export runs too long.
+            </summary>
+        </member>
         <member name="M:Syncfusion.Server.API.Models.ReportServer.Designer.PublishReport(Syncfusion.Server.Base.DataClasses.ApiReportAdd)">
             <summary>
             Add RDL report in Reports Server
@@ -1318,7 +1333,7 @@
             <param name="reportParameter">Parameter Values provided by user</param>
             <returns></returns>
         </member>
-        <member name="M:Syncfusion.Server.API.Models.SchedulerManagementModel.SubscribeUsers(System.Guid,System.Collections.Generic.List{System.String},System.Int32)">
+        <member name="M:Syncfusion.Server.API.Models.SchedulerManagementModel.SubscribeUsers(System.Guid,System.Collections.Generic.List{System.String},System.Int32,System.Boolean)">
             <summary>
             Adding subscribed users to the table.
             </summary>

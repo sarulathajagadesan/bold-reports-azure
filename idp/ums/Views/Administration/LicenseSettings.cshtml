@@ -16,6 +16,8 @@
     var boldBiInstalled = Model?.BuildInfo?.Any(x => x.Name == TenantType.BoldBI.ToString()) ?? false;
     var boldReportsInstalled = Model?.BuildInfo?.Any(x => x.Name == TenantType.BoldReports.ToString()) ?? false;
     var subcriptionContent = CloudAppConfig.Branding.IsWhiteLabelling ? @T["Subscription"] : @T["Plan & Subscription"];
+    var biWelcomeBrandingName = CloudAppConfig.Branding.ProductSpecificBranding.BrandingBIName;
+    var reportsWelcomeBrandingName = CloudAppConfig.Branding.ProductSpecificBranding.BrandingReportsName;
 }
 
 @section styles{
@@ -149,7 +151,7 @@
                                             @{
 #pragma warning disable SCS0029
                                             }
-                                            @Html.Raw(string.Format(T["Welcome to {0}{1}{2} Server"].Value, "<span>", AppBranding.Bold.ProductName, "</span>"))
+                                            @Html.Raw(string.Format(T["Welcome to {0}{1}{2} Server"].Value, "<span>", biWelcomeBrandingName, "</span>"))
                                             @{
 #pragma warning restore SCS0029
                                             }
@@ -250,7 +252,7 @@
                                             @{
 #pragma warning disable SCS0029
                                             }
-                                            @Html.Raw(string.Format(T["Welcome to {0}{1}{2} Server"].Value, "<span>", AppBranding.BoldReports.ProductName, "</span>"))
+                                            @Html.Raw(string.Format(T["Welcome to {0}{1}{2} Server"].Value, "<span>", reportsWelcomeBrandingName, "</span>"))
                                             @{
 #pragma warning restore SCS0029
                                             }

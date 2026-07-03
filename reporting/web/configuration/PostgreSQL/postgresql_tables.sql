@@ -360,7 +360,9 @@ CREATE TABLE SyncRS_ScheduleDetail(
 	ModifiedById int NOT NULL,
 	CreatedDate timestamp NOT NULL,
 	ModifiedDate timestamp NOT NULL,
-	IsActive smallint NOT NULL)
+	IsActive smallint NOT NULL,
+	DataDrivenScheduleDetails varchar(4000) NULL,
+	IsDataDrivenSchedule smallint NOT NULL DEFAULT 1)
 ;
 
 ALTER TABLE SyncRS_ScheduleDetail  ADD FOREIGN KEY(ScheduleId) REFERENCES SyncRS_Item (Id)
@@ -502,7 +504,9 @@ CREATE TABLE SyncRS_ScheduleLog(
 	ExecutedDate timestamp NOT NULL,
 	ModifiedDate timestamp NOT NULL,
 	IsOnDemand smallint NOT NULL DEFAULT (0),
-	IsActive smallint NOT NULL)
+	IsActive smallint NOT NULL,
+	RowDetails text NULL,
+    IsDataDriven smallint NOT NULL DEFAULT 0)
 ;
 
 ALTER TABLE SyncRS_ScheduleLog  ADD FOREIGN KEY(ScheduleStatusId) REFERENCES SyncRS_ScheduleStatus (Id)

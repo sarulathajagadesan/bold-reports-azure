@@ -30,13 +30,11 @@
     <script asp-append-version="true" src="~/js/localizationcontent.js?v=@ServerAppConfig.ProductVersion&c=@System.Globalization.CultureInfo.CurrentCulture"></script>
     <environment include="Development,CloudDevelopment">
         <script asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/license-activation.js"></script>
-        <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/theme/light.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/theme/light.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/layout.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/layout.css")" crossorigin="anonymous"/>
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/license-activation.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/license-activation.css")" crossorigin="anonymous"/>
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/license-activation.min.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/license-activation.min.js")" crossorigin="anonymous"></script>
-        <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/theme/light.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/theme/light.min.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/layout.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/layout.min.css")" crossorigin="anonymous"/>
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/license-activation.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/license-activation.min.css")" crossorigin="anonymous"/>
     </environment>
@@ -61,6 +59,9 @@
             });
         });
     </script>
+    @await Html.PartialAsync("../Shared/_ApplicationThemeStyleSheet.cshtml")
+    @await Html.PartialAsync("../Shared/_BaseThemeStyleSheet.cshtml")
+    @await Html.PartialAsync("../Shared/_BaseFontStyleSheet.cshtml")
 </head>
 
 <body id="license-activation-waiting-element" class="license-activation-content">

@@ -19,7 +19,7 @@
 #else
     var designerServiceUrl = ServerAppConfig.GetDesignerServiceEndPointUrl(ServerAppConfig.InternalAppDataServiceUrl, _globalAppSettings, Context);
 #endif
-    var reportServerApiUrl = ServerAppConfig.GetDesignerServiceEndPointUrl(new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl(), _globalAppSettings, Context);
+    var reportServerApiUrl = new ReportServerApiEndPoints(globalAppSettings).ReportServerApiUrl();
     var reportServiceUrl = designerServiceUrl + "/api/Designer";
     var reportServiceCdnLink = globalAppSettings.SystemSettings.ReportServiceCdnLink.TrimEnd('/');
     var cdnDomain = GlobalAppSettings.CdnDomain;
@@ -117,7 +117,6 @@
         var isSelfHosted = @Json.Serialize(ServerAppConfig.IsSelfHosted);
         var datasource = "@Url.Action("DataSources", "DataSources")";
         var isWindows = @Json.Serialize(@isWindowsPlatform);
-        var designerToken = "@ViewBag.AccessToken";
         var ivCode  = "@ViewBag.IvCode";
         var keyCode = "@ViewBag.KeyCode";
         var encryptionKey = "@ViewBag.EncryptionKey";
@@ -149,12 +148,10 @@
     <div id="designer" style="display:none !important"></div>
 
     <environment include="Development,CloudDevelopment">
-        <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/widget-angular.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/widget-angular.js")" crossorigin="anonymous"></script>
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/extensions/extension.config.js"></script>
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/extensions/custombranding.config.js"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
-        <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/widget-angular.min.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/widget-angular.min.js")" crossorigin="anonymous"></script>
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/extensions/extension.config.js"></script>
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/extensions/custombranding.config.js"></script>
     </environment>

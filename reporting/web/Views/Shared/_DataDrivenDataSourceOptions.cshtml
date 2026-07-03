@@ -1,0 +1,52 @@
+﻿<div class="data-driven-datasource-popup" id="Datasource-selection">
+
+    @* <div class="data-driven-section-header">
+        <div class="data-driven-section-title">[[[Data source]]]</div>
+        <div class="data-driven-section-subtitle">
+            [[[Select a datasource which you have to schedule]]]
+        </div>
+    </div> *@
+
+    <div class="datasource-configured-section">
+
+        <!-- DATASOURCE -->
+        <div class="datasource-field">
+            <label>
+                [[[Select data source]]]
+                <span class="mandatory">*</span>
+            </label>
+
+            @{
+                var datasourceItems = ViewBag.ConfiguredDatasources as IEnumerable<SelectListItem> ?? Enumerable.Empty<SelectListItem>();
+            }
+            <input type="hidden" id="configured-datasource-dropdown-value" value="" />
+            <select id="configured-datasource-dropdown" style="display:none;">
+                <option value="">[[[Select datasource]]]</option>
+                @foreach (var item in datasourceItems)
+                {
+                    <option value="@item.Value">@item.Text</option>
+                }
+            </select>
+
+            <div class="validation-message data-driven-validation-message"
+                 id="configured-datasource-error"></div>
+        </div>
+
+        <!-- DATASET -->
+        <div class="datasource-field">
+            <label>
+                [[[Select dataset]]]
+                <span class="mandatory">*</span>
+            </label>
+
+            <input type="hidden" id="configured-dataset-dropdown-value" value="" />
+            <select id="configured-dataset-dropdown" style="display:none;" disabled="disabled">
+                <option value="">[[[Select dataset]]]</option>
+            </select>
+
+            <div class="validation-message data-driven-validation-message"
+                 id="configured-dataset-error"></div>
+        </div>
+
+    </div>
+</div>

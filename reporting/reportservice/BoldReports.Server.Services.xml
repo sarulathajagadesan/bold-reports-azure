@@ -4,7 +4,7 @@
         <name>BoldReports.Server.Services</name>
     </assembly>
     <members>
-        <member name="M:BoldReports.Server.Service.ActionFilters.CustomAuthorizationAttribute.ForceValidateRequest(Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext)">
+        <member name="M:BoldReports.Server.Service.ActionFilters.CustomAuthorizationFilter.ForceValidateRequest(Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext)">
             <summary>
             Method to verify whether the request needs to force validate the token. 
             This is added to ensure that the reports load action revalidated the token to avoid unauthorized access to the reports in mobile application
@@ -199,6 +199,11 @@
         <member name="P:BoldReports.Server.Services.Cache.CacheModel.Domain">
             <summary>
             Gets or sets the current user domain.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Cache.CacheModel.TokenType">
+            <summary>
+            Gets or sets the Token Type.
             </summary>
         </member>
         <member name="M:BoldReports.Server.Services.Draft.DraftHelper.ParseIso8601toDateTime(System.String)">
@@ -702,6 +707,36 @@
             Provide the item as in stream of bytes
             </summary>
         </member>
+        <member name="T:BoldReports.Server.Report.Model.IRequestContext">
+            <summary>
+            Represents the authorization context for a request.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Report.Model.IRequestContext.AuthorizationToken">
+            <summary>
+            Gets or sets the authorization token.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Report.Model.IRequestContext.EmbedToken">
+            <summary>
+            Gets or sets the embed token.
+            </summary>
+        </member>
+        <member name="T:BoldReports.Server.Report.Model.RequestContext">
+            <summary>
+            Provides a concrete implementation of <see cref="T:BoldReports.Server.Report.Model.IRequestContext"/>.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Report.Model.RequestContext.AuthorizationToken">
+            <summary>
+            Gets or sets the authorization token.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Report.Model.RequestContext.EmbedToken">
+            <summary>
+            Gets or sets the embed token.
+            </summary>
+        </member>
         <member name="M:BoldReports.Server.Report.ApiHelper.CustomHttpClient.SupressCertificateErrors(System.Object,System.Security.Cryptography.X509Certificates.X509Certificate,System.Security.Cryptography.X509Certificates.X509Chain,System.Net.Security.SslPolicyErrors)">
             <summary>
             Supresses the certificate errors in SSL 
@@ -856,11 +891,6 @@
             Gets or sets the Error codes when exception is thrown.
             </summary>
         </member>
-        <member name="P:BoldReports.Server.RequestHelpers.TokenResponse.TokenData">
-            <summary>
-            Gets or sets the Embed Token Data.
-            </summary>
-        </member>
         <member name="P:BoldReports.Server.RequestHelpers.TokenResponse.Email">
             <summary>
             Gets or sets the Email.
@@ -874,6 +904,11 @@
         <member name="P:BoldReports.Server.RequestHelpers.TokenResponse.Filter">
             <summary>
             Gets or sets the data source level filter to be applied to the dashboard in embed mode.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.RequestHelpers.TokenResponse.TokenType">
+            <summary>
+            Gets or sets the Token Type.
             </summary>
         </member>
     </members>

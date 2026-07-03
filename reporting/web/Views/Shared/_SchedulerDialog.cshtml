@@ -13,17 +13,19 @@
 <!DOCTYPE html>
 <html class="dashboard-server">
 <head>
+    @await Html.PartialAsync("../Shared/_ApplicationThemeStyleSheet.cshtml")
+    @await Html.PartialAsync("../Shared/_BaseThemeStyleSheet.cshtml")
+    @await Html.PartialAsync("../Shared/_BaseFontStyleSheet.cshtml")
+
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/essentialjs/ej2-dropdowntree.min.js"></script>
     <environment include="Development,CloudDevelopment">
-        <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/theme/light.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/theme/light.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/scheduleiframe.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/scheduleiframe.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/schedulerdialog.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/schedulerdialog.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/scheduleemaileditor.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/scheduleemaileditor.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@ServerAppConfig.CustomFontUrl(globalAppSettings?.SystemSettings?.FontPreference, reportServerResourceUrl)" />
     </environment>
     <environment exclude="Development,CloudDevelopment">
-        <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/theme/light.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/theme/light.min.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/scheduleiframe.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/scheduleiframe.min.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/schedulerdialog.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/schedulerdialog.min.css")" crossorigin="anonymous" />
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/scheduleemaileditor.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/scheduleemaileditor.min.css")" crossorigin="anonymous" />
@@ -71,6 +73,41 @@
                 </div>
                 <div class="modal-body share-popup col-xs-12" id="schedule-dialog">
                     <div class="col-sm-12 col-xs-12 no-margin no-padding schedule-popup-body">
+                        <div id="schedule-type-selection" class="schedule-type-selection">
+                            <div class="schedule-type-header">Schedule Type</div>
+
+                            <div class="schedule-type-cards" role="tablist">
+                                <button type="button"
+                                        class="schedule-type-card selected"
+                                        data-schedule-type="standard"
+                                        aria-selected="true">
+
+                                    <span class="radio-indicator"></span>
+
+                                    <div>
+                                        <span class="schedule-type-card-title">Standard schedule</span>
+                                        <span class="schedule-type-card-description">
+                                            A standard schedule automates report generation and delivery based on predefined settings.It uses fixed recipients, parameters, and delivery options configured at runtime.
+                                        </span>
+                                    </div>
+                                </button>
+
+                                <button type="button"
+                                        class="schedule-type-card"
+                                        data-schedule-type="data-driven"
+                                        aria-selected="false">
+
+                                    <span class="radio-indicator"></span>
+
+                                    <div>
+                                        <span class="schedule-type-card-title">Data driven schedule</span>
+                                        <span class="schedule-type-card-description">
+                                            A data-driven schedule automates report generation and delivery using query-based data. It dynamically determines recipients, parameters, and delivery settings at runtime.
+                                        </span>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
                         <div class="col-sm-12 col-xs-12 no-padding">
                             <div class="d-flex align-items-start">
                             <div class="col-sm-2 col-xs-2 no-padding align-center"><label>[[[Category ]]]<span class="mandatory">*</span></label></div>
@@ -83,7 +120,7 @@
                                 <span id="category-message" class="ErrorMessage validate-error">[[[Please select category]]]</span>
                                 <input type="hidden" id="category_change_validation" name="isCategoryChanged" value="false" /> *@
 
-                                <input id="selected_category" style="width:230px; height:10px;" />
+                                <input id="selected_category" class="no-padding""" style="width:230px; height:10px;" />
                                 <div id="categorylist_validation" class="validation-message text"></div>
 
                             
@@ -172,7 +209,7 @@
                             </div>
                         </div>
                         -->
-                        <div class="col-sm-12 col-12 no-padding">
+                        <div class="col-sm-12 col-12 no-padding exportfilename-div">
                             <div class="d-flex align-items-start">
                                 <div class="col-sm-2 col-2 no-padding"><label>[[[Export FileName ]]]<span class="mandatory">*</span></label></div>
                                 <div class="col-sm-4 col-4 name-field">
@@ -360,6 +397,7 @@
     @*var dataChanges = "@Url.Action("DataChanges", "scheduler")";
     var getwidgetUrl = "@Url.Action("GetWidgets", "scheduler")";*@
     var getCategoryUrl = "@Url.Action("GetCategories", "scheduler")";
+    var specificEventListURL = { "web": "@Url.Action("SpecificEvents", "Administration")", "api": "/internal/e-mail-template/get-specific-templates" };
     var getTenantStatusUrl = "@Url.Action("GetTenantStatus", "PartialView")";
     var getNotificationCountUrl = "@Url.Action("GetNotificationCount", "PartialView")";
     var passwordOptions = "@Url.Action("ZipFilePassword", "scheduler")";
@@ -372,6 +410,17 @@
     var editSchedulerParameter = "@Url.Action("EditSchedulerParameter", "scheduler")";
     var subjectItem = "@Url.Action("GetSubjectItem", "scheduler")";
     var getScheduleContentUrl = "@Url.Action("GetScheduleCustomBody", "scheduler")";
+    var getDatasourceSelectionUrl = "@Url.Action("DataDrivenDatasourceSelection", "scheduler")";
+    var getDeliveryOptionUrl = "@Url.Action("DataDrivenDeliveryOption", "scheduler")";
+    var getDataDrivenScheduleParamter ="@Url.Action("DataDrivenScheduleParameter", "scheduler")";
+    var getConfiguredDatasourcesUrl = "@Url.Action("GetConfiguredDatasources", "scheduler")";
+    var getConfiguredDatasetsUrl = "@Url.Action("GetConfiguredDatasets", "scheduler")";
+    var getConnectionTypesUrl = "@Url.Action("GetConnectionTypes", "scheduler")";
+    var getDatasetColumnsUrl = "@Url.Action("GetDatasetColumns", "scheduler")";
+    var addScheduleUrl = "@Url.Action("AddSchedule", "scheduler")";
+    var updateScheduleUrl = "@Url.Action("UpdateSchedule", "scheduler")";
+    var getDatasetUrl = "@Url.Action("GetDatasetsByDatasource", "scheduler")";
+    var getDatasetColumnUrl = "@Url.Action("GetDatasetSchema", "scheduler")";
     var isSelfHosted = @Json.Serialize(ServerAppConfig.IsSelfHosted);
     var schedulerDialogNonce = "@Context.Items["ScriptNonce"]";
     $("#selected_dashboard").selectpicker();

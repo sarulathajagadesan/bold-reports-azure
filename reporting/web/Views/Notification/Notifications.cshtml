@@ -28,7 +28,11 @@
 
     <script nonce="@Context.Items["ScriptNonce"]">
         var isHideGuidInUrl = @Json.Serialize(ServerAppConfig.IsHideGuidInUrl);
-        $(document).ready(function () {
+        function initializeNotificationPage() {
+            if (typeof userNotificationController === 'undefined' || typeof userNotificationController.getUserSystemNotification !== "function") {
+                window.setTimeout(initializeNotificationPage, 50);
+                return;
+            }
             $("#notifciation-page-container #user-notification-container").show();
             $("#user-system-notification").hide();
             userNotificationContainer.show().removeClass("user-notification-close").addClass("user-notification-open");
@@ -37,9 +41,10 @@
             });
             ejs.popups.setSpinner({ type: 'Material' });
             ejs.popups.showSpinner(document.getElementById('notifciation-page-container'));
-            var notificationController = angular.element(userNotificationObj).scope();
-            notificationController.getUserSystemNotification();
-        });
+            userNotificationController.getUserSystemNotification();
+        }
+
+        $(document).ready(initializeNotificationPage);
     </script>
 }
 

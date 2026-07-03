@@ -69,7 +69,7 @@
     @if (itemsCount != null && itemsCount.ContainsKey(ItemType.Datasource) && itemsCount[ItemType.Datasource] > 0)
     {
         @await Html.PartialAsync("../Shared/_TopHeaderSection", new ViewDataDictionary(ViewData) { { "PageHeader", "[[[DATA SOURCES]]]" } })
-        <div id="item-grid-container" data-grid-name="datasources" class="admin-page-container" ng-controller="itemsCtrl" style="padding: 80px 20px 20px 30px;">
+        <div id="item-grid-container" data-grid-name="datasources" class="admin-page-container" style="padding: 80px 20px 20px 30px;">
             <input type="hidden" class="page-name" data-content="[[[DATA SOURCES]]]">
             @if (!isMobile)
             {
