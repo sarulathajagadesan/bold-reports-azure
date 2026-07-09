@@ -378,7 +378,8 @@
     }
 
     <script nonce="@Context.Items["ScriptNonce"]">
-        function loadCustomFonts() {
+        function loadCustomFonts() 
+        {
             @if (ServerAppConfig.CustomFont != null && ServerAppConfig.CustomFont.Count > 0)
             {
                 foreach (var font in ServerAppConfig.CustomFont)
@@ -389,13 +390,16 @@
             }
             else if (isUseFontsFromDirectory)
             {
-                var fonts = System.IO.Directory.GetFiles(customFontFolderPath, "*.ttf");
+                var fonts = _globalAppSettings.IsCloudStorage() ? _globalAppSettings.StorageHelper.GetStorageObjectListForRelativePath(customFontFolderPath) : System.IO.Directory.GetFiles(customFontFolderPath, "*.ttf");
                 foreach (var fontPath in fonts)
                 {
-                    var fontKeyName = System.IO.Path.GetFileNameWithoutExtension(fontPath);
-                    var fontFileName = System.IO.Path.GetFileName(fontPath);
-                    @:customFontsName.push(decodeHtmlAsString("@fontKeyName"));
-                    @:addCustomFonts(decodeHtmlAsString("@fontKeyName"), decodeHtmlAsString("@fontFileName"));
+                    if (System.IO.Path.GetExtension(fontPath) == ".ttf")
+                    {
+                        var fontKeyName = System.IO.Path.GetFileNameWithoutExtension(fontPath);
+                        var fontFileName = System.IO.Path.GetFileName(fontPath);
+                        @:customFontsName.push(decodeHtmlAsString("@fontKeyName"));
+                        @:addCustomFonts(decodeHtmlAsString("@fontKeyName"), decodeHtmlAsString("@fontFileName"));
+                    }
                 }
             }
         }

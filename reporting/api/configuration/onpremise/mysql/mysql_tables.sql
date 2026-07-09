@@ -283,7 +283,7 @@ CREATE TABLE  {database_name}.BOLDRS_ScheduleDetail(
 	ScheduleRunStatus varchar(1000) NULL,
 	IsGroupingEnabled tinyint NOT NULL,
 	ExportTypes VARCHAR(500) NULL,
-	DataDrivenScheduleDetails varchar(4000) NULL,
+	DataDrivenScheduleDetails text NULL,
 	IsDataDrivenSchedule tinyint NOT NULL DEFAULT 0,
 	PRIMARY KEY (Id)) ROW_FORMAT=DYNAMIC
 ;
@@ -378,7 +378,7 @@ CREATE TABLE  {database_name}.BOLDRS_ScheduleLog(
 	IsDataDriven smallint NOT NULL DEFAULT 0,
 	ExportFileName varchar(255) NULL,
     IsFileActive tinyint(1) NOT NULL,
-    PRIMARY KEY (Id)
+    PRIMARY KEY (Id)) ROW_FORMAT=DYNAMIC
 ;
 
 CREATE TABLE  {database_name}.BOLDRS_SystemSettings(
@@ -957,6 +957,32 @@ CREATE TABLE {database_name}.BOLDRS_CustomEmailTemplate (
     Description VARCHAR(255) NULL,
     ModifiedBy int NOT NULL) ROW_FORMAT=DYNAMIC
 ;
+
+CREATE TABLE {database_name}.BOLDRS_ReportCopyLog(
+    Id char(38) NOT NULL,
+    BatchId char(38) NULL,
+    IsBulkCopy tinyint NOT NULL,
+    SourceItemId char(38) NOT NULL,
+    SourceItemName varchar(255) NOT NULL,
+    SourceCategoryId char(38) NULL,
+    SourceCategoryName varchar(255) NULL,
+    SourceTenantId char(38) NOT NULL,
+	CopySiteType varchar(255) NULL,
+	ExternalSiteUrl varchar(255) NULL,
+    DestinationTenantId char(38) NOT NULL,
+    DestinationTenantName varchar(255) NOT NULL,
+    DestinationCategoryPath varchar(1000) NOT NULL,
+    DestinationCategoryId char(38) NULL,
+    DestinationItemId char(38) NULL,
+    DestinationItemName varchar(255) NOT NULL,
+    IsOverwrite tinyint NOT NULL,
+    CopiedByUserId int NOT NULL,
+    CopiedAt datetime NOT NULL,
+    Status varchar(50) NOT NULL,
+    FailureReason text NULL,
+    PRIMARY KEY (Id))
+;
+
 
 /*INSERT Queries below this section*/ 
 
@@ -2218,6 +2244,12 @@ ALTER TABLE {database_name}.BOLDRS_EmailActivityLog  ADD FOREIGN KEY(CommentId) 
 ;
 
 ALTER TABLE {database_name}.BOLDRS_ItemSettings ADD CONSTRAINT FK_ItemSettings_ItemId FOREIGN KEY(ItemId) REFERENCES {database_name}.BOLDRS_Item (Id)
+;
+
+ALTER TABLE {database_name}.BOLDRS_ReportCopyLog  ADD FOREIGN KEY(CopiedByUserId) REFERENCES {database_name}.BOLDRS_User (Id)
+;
+
+ALTER TABLE {database_name}.BOLDRS_ReportCopyLog  ADD FOREIGN KEY(SourceItemId) REFERENCES {database_name}.BOLDRS_Item (Id)
 ;
 
 CREATE  INDEX IX_BOLDRS_ScheduleDetail_ScheduleId ON  {database_name}.BOLDRS_ScheduleDetail (ScheduleId);

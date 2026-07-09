@@ -11,7 +11,8 @@
     var isBoldBiLicenseAvailable = boldBiLicense != null;
     var isBoldReportsLicenseAvailable = boldReportsLicense != null;
     var isAzureApplication = string.IsNullOrEmpty(GlobalAppSettings.Configuration.GetSection("AppSettings")["IsAzureApplication"]) ? false : Convert.ToBoolean(GlobalAppSettings.Configuration.GetSection("AppSettings")["IsAzureApplication"]);
-    var licenseExpired = await LicenseManagement.ValidateBoldLicense();
+    var licenseMessage = await LicenseManagement.ValidateBoldLicense();
+    var isValidLicense = licenseMessage.BoldReportsValidationMessage != null;
     var environment = EnvironmentHelper.GetEnvironment();
     var boldBiInstalled = Model?.BuildInfo?.Any(x => x.Name == TenantType.BoldBI.ToString()) ?? false;
     var boldReportsInstalled = Model?.BuildInfo?.Any(x => x.Name == TenantType.BoldReports.ToString()) ?? false;
@@ -29,12 +30,12 @@
     <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/offline-license-update.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/offline-license-update.js")" crossorigin="anonymous" asp-append-version="true"></script>
 
     <script nonce="@Context.Items["ScriptNonce"]">
-        var isBoldBILicenseExpired = @Json.Serialize(licenseExpired.IsBoldBILicenseExpired);
+        var isBoldBILicenseExpired = @Json.Serialize(licenseMessage.IsBoldBILicenseExpired);
         var updateLicenseKeyUrl = "@Url.Action("ApplyLicenseKey", "Administration")";
         var isBoldBiLicenseAvailable = "@isBoldBiLicenseAvailable";
         var isBoldReportsLicenseAvailable = "@isBoldReportsLicenseAvailable";
         var validateLicenseKeyUrl = "@Url.Action("ValidateLicenseKey", "Administration")";
-        var isBoldReportsLicenseExpired = @Json.Serialize(licenseExpired.IsBoldReportsLicenseExpired);
+        var isBoldReportsLicenseExpired = @Json.Serialize(licenseMessage.IsBoldReportsLicenseExpired);
     </script>
 }
 
@@ -99,11 +100,11 @@
                             {
                                 <form id="license-settings-form" class="col-md-12 float-start form-horizontal no-padding" autocomplete="off">
                                     @Html.AntiForgeryToken()
-                                    @if (licenseExpired.IsBoldBILicenseExpired)
+                                    @if (licenseMessage.IsBoldBILicenseExpired)
                                     {
                                         <div class="renew-container">
                                             <span class="su su-warning-alt"></span>
-                                            <span class="renew-content">@licenseExpired.BoldBIValidationMessage</span>
+                                            <span class="renew-content">@licenseMessage.BoldBIValidationMessage</span>
                                             <span><a href="@await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.LicenseError)" class="text-decoration-none" target="_blank">@T["Need help?"]</a></span>
                                         </div>
                                     }
@@ -123,8 +124,8 @@
                                                         }
                                                         <p class="display-none">@boldBiLicense.SubscriptionInfo.TenantId</p>
                                                         <p id="subscription-id-bi"><a class="subscription-link text-decoration-none" href="@CloudAppConfig.GetOnPremiseSubscriptionUrl(boldBiLicense.SubscriptionInfo.TenantId)" class="text-decoration-none" target="_blank">@boldBiLicense.SubscriptionInfo.TenantId</a></p>
-                                                        <button data-bs-toggle="tooltip" class="float-end secondary-button" data-bs-original-title="@T["Click to copy"]" id="subscription-copy-bi">@T["Copy"]</button>
-                                                        <button class="float-end secondary-button" id="change-subscription" license-service-url="@($"{ViewBag.GetLicenseUrlForBI}{(int)TenantType.BoldBIOnPremise}&environment={environment}")" data-offlinelicense-url="@await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.Downloads, TenantType.BoldBIOnPremise)" data-tenant-type="@((int)TenantType.BoldBIOnPremise)">@T["Refresh License"]</button>
+                                                        <button type="button" data-bs-toggle="tooltip" class="float-end secondary-button" data-bs-original-title="@T["Click to copy"]" id="subscription-copy-bi">@T["Copy"]</button>
+                                                        <button type="button" class="float-end secondary-button" id="change-subscription" license-service-url="@($"{ViewBag.GetLicenseUrlForBI}{(int)TenantType.BoldBIOnPremise}&environment={environment}")" data-offlinelicense-url="@await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.Downloads, TenantType.BoldBIOnPremise)" data-tenant-type="@((int)TenantType.BoldBIOnPremise)">@T["Refresh License"]</button>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -201,10 +202,10 @@
                             {
                                 <form id="license-settings-form" class="col-md-12 float-start form-horizontal no-padding" autocomplete="off">
                                     @Html.AntiForgeryToken()
-                                    @if (licenseExpired.IsBoldReportsLicenseExpired)
+                                    @if (isValidLicense)
                                     {
                                         <div class="renew-container">
-                                            <p class="renew-content">@licenseExpired.BoldReportsValidationMessage</p>
+                                            <p class="renew-content">@licenseMessage.BoldReportsValidationMessage</p>
                                             <span class="su su-warning-alt"></span>
                                         </div>
                                     }
@@ -224,8 +225,8 @@
                                                         }
                                                         <p class="display-none">@boldReportsLicense.SubscriptionInfo.TenantId</p>
                                                         <p id="subscription-id-reports"><a class="subscription-link text-decoration-none" href="@CloudAppConfig.GetOnPremiseSubscriptionUrl(boldReportsLicense.SubscriptionInfo.TenantId)" target="_blank">@boldReportsLicense.SubscriptionInfo.TenantId</a></p>
-                                                        <button data-bs-toggle="tooltip" class="float-end secondary-button" data-bs-original-title="@T["Click to copy"]" id="subscription-copy-reports">@T["Copy"]</button>
-                                                        <button class="float-end secondary-button" id="change-subscription" license-service-url="@($"{ViewBag.GetLicenseUrlForReports}{(int)TenantType.BoldReportsOnPremise}&environment={environment}")" data-offlinelicense-url="@await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.Downloads, TenantType.BoldReportsOnPremise)" data-tenant-type="@((int)TenantType.BoldReportsOnPremise)">@T["Refresh License"]</button>
+                                                        <button type="button" data-bs-toggle="tooltip" class="float-end secondary-button" data-bs-original-title="@T["Click to copy"]" id="subscription-copy-reports">@T["Copy"]</button>
+                                                        <button type="button" class="float-end secondary-button" id="change-subscription" license-service-url="@($"{ViewBag.GetLicenseUrlForReports}{(int)TenantType.BoldReportsOnPremise}&environment={environment}")" data-offlinelicense-url="@await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.Downloads, TenantType.BoldReportsOnPremise)" data-tenant-type="@((int)TenantType.BoldReportsOnPremise)">@T["Refresh License"]</button>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -328,7 +329,7 @@
             {
                 <p class="col-12 float-start no-margin">@T["Use the offline license file to update the license information."] </p>
             }
-            <button id="offline-update-bi" data-offlinelicense-url="" data-tenant-type="" class="link-button offline-change-subscription col-12 float-start no-padding">@T["Upload"]</button>
+            <button type="button" id="offline-update-bi" data-offlinelicense-url="" data-tenant-type="" class="link-button offline-change-subscription col-12 float-start no-padding">@T["Upload"]</button>
             @if (!CloudAppConfig.Branding.IsWhiteLabelling)
             {
                 <div class="col-12 float-start no-margin help-container">If you don’t have the license file, download it <a id="change-subscription-help" class="text-decoration-none" target="_blank" href="">@T["here"]</a>.</div>

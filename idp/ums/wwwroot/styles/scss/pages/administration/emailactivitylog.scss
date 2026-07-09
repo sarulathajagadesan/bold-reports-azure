@@ -134,9 +134,44 @@
     width: 191px;
 }
 
+#loginActivityLogGrid { clear: both; margin-top: 24px !important; }
+
+.header-section {
+    .auth-page-border {
+        border-bottom: 1px solid var(--header-separator-color);
+    }
+
+    .auth-page-nav-bar {
+        margin-top: 25px;
+        background: $tab-bg-normal-color;
+
+        .nav {
+            padding-left: 24px;
+
+            > li {
+                > a {
+                    position: relative;
+                    display: block;
+                    padding: 0px 12px 10px 12px;
+                    line-height: 14px;
+                }
+            }
+
+            .active {
+                a {
+                    padding-bottom: 8px;
+                }
+            }
+
+            .active::after {
+                position: relative;
+            }
+        }
+    }
+}
 
 #activity-log-container {
-    height: calc(100% - 75px) !important;
+    height: calc(100% - 120px) !important;
     .admin-page-content
     {
         .filter-section
@@ -212,8 +247,17 @@
 
 }
 
-#userActivityLogGrid {
-    margin: 50px 24px 0px 24px !important;
+#userActivityLogGrid, #loginActivityLogGrid {
+    margin: 24px 24px 0px 24px !important;
+
+    .user-event-name {
+        white-space: pre;
+        display: inline-block;
+        word-break: normal;
+        overflow-wrap: normal;
+        
+    }
+    
     .initiate-display-name
     {
         text-wrap: initial !important;

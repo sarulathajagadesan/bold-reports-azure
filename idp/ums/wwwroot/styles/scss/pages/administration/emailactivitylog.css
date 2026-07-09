@@ -107,8 +107,29 @@
 .date-picker {
   width: 191px; }
 
+#loginActivityLogGrid {
+  clear: both;
+  margin-top: 24px !important; }
+
+.header-section .auth-page-border {
+  border-bottom: 1px solid var(--header-separator-color); }
+.header-section .auth-page-nav-bar {
+  margin-top: 25px;
+  background: var(--tab-bg-normal-color); }
+  .header-section .auth-page-nav-bar .nav {
+    padding-left: 24px; }
+    .header-section .auth-page-nav-bar .nav > li > a {
+      position: relative;
+      display: block;
+      padding: 0px 12px 10px 12px;
+      line-height: 14px; }
+    .header-section .auth-page-nav-bar .nav .active a {
+      padding-bottom: 8px; }
+    .header-section .auth-page-nav-bar .nav .active::after {
+      position: relative; }
+
 #activity-log-container {
-  height: calc(100% - 75px) !important; }
+  height: calc(100% - 120px) !important; }
   #activity-log-container .admin-page-content .filter-section {
     padding: 24px 0px 0px 24px !important; }
     #activity-log-container .admin-page-content .filter-section .filter-alignment {
@@ -162,9 +183,14 @@
   #activity-log-container .activity-settings-drop-down-category {
     margin-left: 90px; }
 
-#userActivityLogGrid {
-  margin: 50px 24px 0px 24px !important; }
-  #userActivityLogGrid .initiate-display-name {
+#userActivityLogGrid, #loginActivityLogGrid {
+  margin: 24px 24px 0px 24px !important; }
+  #userActivityLogGrid .user-event-name, #loginActivityLogGrid .user-event-name {
+    white-space: pre;
+    display: inline-block;
+    word-break: normal;
+    overflow-wrap: normal; }
+  #userActivityLogGrid .initiate-display-name, #loginActivityLogGrid .initiate-display-name {
     text-wrap: initial !important; }
 
 #user-activity-log #user-activity-log_title {

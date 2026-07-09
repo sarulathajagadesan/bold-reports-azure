@@ -24,16 +24,16 @@
     <link rel="stylesheet" href="~/bundles/css/error-page.css" integrity="@IntegrityTagHelper.GetIntegrity("bundles/css/error-page.css")" crossorigin="anonymous" asp-append-version="true" />
     <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/error.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/error.js")" crossorigin="anonymous" asp-append-version="true"></script>
     <script nonce="@Context.Items["ScriptNonce"]">
-        var defaultErrorImageSrc = "@Url.Content(CloudAppConfig.FallbackLoginLogoUrl)";
-        document.addEventListener("DOMContentLoaded", function () {
-            var logoimage = document.getElementById("page-not-found-image-five-hundred");
-            if (logoimage) {
-                logoimage.onerror = function () {
-                    this.onerror = null;
-                    this.src = defaultErrorImageSrc;
-                };
-            }
-        });
+            var defaultErrorImageSrc = "@Url.Content(CloudAppConfig.FallbackLoginLogoUrl)";
+            document.addEventListener("DOMContentLoaded", function () {
+                var logoimage = document.getElementById("page-not-found-image-five-hundred");
+                if (logoimage) {
+                    logoimage.onerror = function () {
+                        this.onerror = null;
+                        this.src = defaultErrorImageSrc;
+                    };
+                }
+            });
     </script>
 </head>
 <body class="error-full-content">
@@ -106,8 +106,13 @@
                         <div class="take-me-back-to-home-page">
                             @if (upgradeAccessDecision?.CanAccessSite == true)
                             {
-                                <span class="error-page-cursor"><a class="error-to-back-text-color" href="@continueAccessUrl" style="color: var(--global-link-text-normal-color); text-decoration: underline;">@T["Continue to site"]</a></span>
-                                <span>@T["and review the application logs before retrying the upgrade."]</span>
+                                @Html.Raw(string.Format(T["{0}Go to profile page{1} or {2}Create a support ticket{3} with application logs by referring to this {4}link{5}."].Value,
+                                $"<span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='" + continueAccessUrl + "'>",
+                                "</a></span>",
+                                $"</span><span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='https://support.{GlobalAppSettings.BrandingDomain}/create' target='_blank'>",
+                                "</a></span>",
+                                $"</span><span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='{await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.ErrorAndDebugLogs)}' target='_blank'>",
+                                "</a></span>"))
                             }
                             else
                             {
@@ -120,16 +125,18 @@
                         <div class="take-me-back-to-home-page">
                             @{
 #pragma warning disable SCS0029
+
                             }
                             @Html.Raw(string.Format(T["{0}Go to home page{1} or {2}Create a support ticket{3} with application logs by referring to this {4}link{5}."].Value,
                                 $"<span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='{GlobalAppSettings.SystemSettings.BaseUrl}'>",
                                 "</a></span>",
                                 $"</span><span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='https://support.{GlobalAppSettings.BrandingDomain}/create' target='_blank'>",
                                 "</a></span>",
-                                $"</span><span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='{ await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.ErrorAndDebugLogs)}' target='_blank'>",
+                                $"</span><span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='{await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.ErrorAndDebugLogs)}' target='_blank'>",
                                 "</a></span>"))
                             @{
 #pragma warning restore SCS0029
+
                             }
                         </div>
                     }
@@ -138,6 +145,7 @@
                         <div class="take-me-back-to-home-page">
                             @{
 #pragma warning disable SCS0029
+
                             }
                             @Html.Raw(string.Format(T["{0}Go to home page{1} or {2}Create a support ticket{3}."].Value,
                                 $"<span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='{GlobalAppSettings.SystemSettings.BaseUrl}'>",
@@ -146,6 +154,7 @@
                                 "</a></span>"))
                             @{
 #pragma warning restore SCS0029
+
                             }
                         </div>
                     }

@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Routing;
 @using Syncfusion.Server.Base.Helpers
+@using System.Collections.Generic
 @inject Microsoft.AspNetCore.Mvc.Infrastructure.IActionContextAccessor actionContextAccessor
 
 @{
@@ -29,10 +30,14 @@
     var isAdminUser = Context.Session.GetString("IsAdmin") != null && Convert.ToBoolean(Context.Session.GetString("IsAdmin"));
     var loginLogo = globalAppSettings.SystemSettings != null ? globalAppSettings.SystemSettings.LoginLogo : cdnLink + "/application/" + ServerAppConfig.AppSettings.AppBranding.Identifier + "/" + IconFileNames.LoginLogo;
     var isDeploymentError = !string.IsNullOrWhiteSpace(ViewBag.TenantErrorMessage);
+    var isUpgradeExecutionError = string.Equals(ViewBag.ErrorType as string, "upgrade_execution", StringComparison.OrdinalIgnoreCase);
+    var upgradeErrorDetails = ViewBag.UpgradeErrorDetails as IEnumerable<KeyValuePair<string, string>>;
+    var upgradeAccessDecision = ViewBag.UpgradeSiteAccessDecision as UpgradeSiteAccessDecision;
     var errorMessage = string.IsNullOrWhiteSpace(ViewBag.TenantErrorMessage) ? ViewBag.ErrorMessage : ViewBag.TenantErrorMessage;
     var errorandDebugHelpSiteUrl = GlobalAppSettings.GetHelpSiteUrl(HelpSiteUrlNames.ErrorAndDebugLogs);
     var faviconFallbackPath = reportServerResourceUrl + "/cdn/images/application/" + ServerAppConfig.AppSettings.AppBranding.Identifier + "/" + IconFileNames.Favicon;
     var loginLogoFallbackPath = reportServerResourceUrl + "/cdn/images/application/" + ServerAppConfig.AppSettings.AppBranding.Identifier + "/" + IconFileNames.LoginLogo;
+    var continueAccessUrl = homePageUrl + (homePageUrl.Contains("?") ? "&" : "?") + "continue-upgrade-access=true";
 }
 <!DOCTYPE html>
 <html class="dashboard-server">
@@ -91,7 +96,23 @@
                 @if (!string.IsNullOrWhiteSpace(errorMessage))
                 {
                     <div id="deploy-error-container">
-                        <textarea type="text" id="deploy-error-box" disabled>@errorMessage</textarea>
+                        @if (isUpgradeExecutionError && upgradeErrorDetails != null)
+                        {
+                            <div class="upgrade-error-box" style="width: 500px; height: 120px; overflow: auto; border: 1px solid var(--grey-400); box-sizing: border-box; border-radius: 4px; padding: 12px 36px 12px 14px; text-align: left; background: var(--surface); color: var(--primary-text-normal-color); font-size: 12px; line-height: 20px;">
+                                @foreach (var detail in upgradeErrorDetails)
+                                {
+                                    <div>
+                                        <strong>@detail.Key:</strong>
+                                        <span>@detail.Value</span>
+                                    </div>
+                                }
+                            </div>
+                            <textarea type="text" id="deploy-error-box" disabled style="position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0;">@errorMessage</textarea>
+                        }
+                        else
+                        {
+                            <textarea type="text" id="deploy-error-box" disabled>@errorMessage</textarea>
+                        }
                         <span class="su su-copy text focus" id="deploy-error-copy" data-bs-toggle="tooltip" title="[[[Click to copy]]]"></span>
                     </div>
                 }
@@ -116,13 +137,32 @@
                     }
                     else
                     {
-                        @if (isAdminUser && ServerAppConfig.IsSelfHosted)
+                        @if (isUpgradeExecutionError)
+                        {
+                            @if (upgradeAccessDecision?.CanAccessSite == true)
+                            {
+                                @Html.Raw(string.Format(
+                                    "{0}Continue to site{1} or {2}create a support ticket{3} with application logs by referring to this {4}link{5}.",
+                                    "<span class='error-page-cursor'><a class='error-to-beck-text-color' href='" + continueAccessUrl + "' style='color: var(--global-link-text-normal-color); text-decoration: underline;'>",
+                                    "</a></span>",
+                                    "<span class='error-page-cursor'><a class='error-to-beck-text-color' href='https://www." + GlobalAppSettings.BrandingDomain + "/support' target='_blank'>",
+                                    "</a></span><span class='error-text-color'>",
+                                    "<span class='error-page-cursor'><a class='error-to-beck-text-color' href='" + (ServerAppConfig.AppSettings.Documentation.BaseUri + errorandDebugHelpSiteUrl) + "' target='_blank'>",
+                                    "</a></span>"
+                                ))
+                            }
+                            else
+                            {
+                                <span>[[[Site access is temporarily blocked because the database upgrade could not be safely completed. Review the application logs and resolve the upgrade issue before retrying.]]]</span>
+                            }
+                        }
+                        else if (!isUpgradeExecutionError && isAdminUser && ServerAppConfig.IsSelfHosted && !ServerAppConfig.IsHideHelpLink)
                         {
                             <span class='error-page-cursor'><a class='error-to-beck-text-color' href='@homePageUrl'>[[[Go to home page]]]</a></span>
                             <span class='error-text-color'>[[[ or ]]]</span>
                             <span class='error-page-cursor'><a class='error-to-beck-text-color' href='https://www.@(GlobalAppSettings.BrandingDomain)/support' target='_blank'>[[[Create a support ticket]]]</a><span>[[[ with application logs by referring to this ]]]</span><a class='error-to-beck-text-color' href="@(ServerAppConfig.AppSettings.Documentation.BaseUri + errorandDebugHelpSiteUrl)" target='_blank'>[[[link]]]</a></span>
                         }
-                        @if (!ServerAppConfig.IsSelfHosted)
+                        @if (!isUpgradeExecutionError && !ServerAppConfig.IsSelfHosted)
                         {
                             <span class='error-page-cursor'><a class='error-to-beck-text-color' href='@homePageUrl'>[[[Go to home page]]]</a></span>
                             <span class='error-text-color'>[[[ or ]]]</span>

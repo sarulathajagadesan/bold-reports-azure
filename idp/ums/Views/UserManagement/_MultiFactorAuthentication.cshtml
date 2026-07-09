@@ -25,7 +25,7 @@
             <img src="@imageHelper.MfaSuccessImage()" />
             @Html.Label("configure-2FA", T["Two factor authentication is enabled for this user account."].Value, new { @class = "app-textbox-label" })
             <div class="mfa-disable">
-                <div class="mfa-button"><a href="" id="mfa-disable-button" class="mfa-disable-button text-decoration-none">@T["Remove Two Factor Authentication"]</a></div>
+                <div class="mfa-button"><a href="javascript:void(0);" id="mfa-disable-button" class="mfa-disable-button text-decoration-none" role="button">@T["Remove Two Factor Authentication"]</a></div>
                 @if (isSelfUser)
                 {
                     <div class="mfa-button">

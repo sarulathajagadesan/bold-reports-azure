@@ -1,13 +1,13 @@
 ﻿﻿@{
-    Layout = null;
-    var imageHelper = new ImageHelper(Context);
-    var rawErrorStackTrace = Convert.ToString(ViewBag.Errorstacktrace);
-    var errorstacktrace = string.IsNullOrEmpty(rawErrorStackTrace) ? string.Empty : GlobalAppSettings.ReplaceErrorStackTrace(rawErrorStackTrace);
-    var isAdmin = Context.Session.GetString("IsAdmin") != null ? Convert.ToBoolean(Context.Session.GetString("IsAdmin").ToString()) : false;
-    var isUpgradeExecutionError = string.Equals(ViewBag.ErrorType as string, "upgrade_execution", StringComparison.OrdinalIgnoreCase);
-    var upgradeErrorDetails = ViewBag.UpgradeErrorDetails as System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>;
-    var upgradeAccessDecision = ViewBag.UpgradeSiteAccessDecision as Syncfusion.Server.Base.UpgradeSiteAccessDecision;
-    var continueAccessUrl = GlobalAppSettings.SystemSettings.BaseUrl + (GlobalAppSettings.SystemSettings.BaseUrl.Contains("?") ? "&" : "?") + "continue-upgrade-access=true";
+Layout = null;
+var imageHelper = new ImageHelper(Context);
+var rawErrorStackTrace = Convert.ToString(ViewBag.Errorstacktrace);
+var errorstacktrace = string.IsNullOrEmpty(rawErrorStackTrace) ? string.Empty : GlobalAppSettings.ReplaceErrorStackTrace(rawErrorStackTrace);
+var isAdmin = Context.Session.GetString("IsAdmin") != null ? Convert.ToBoolean(Context.Session.GetString("IsAdmin").ToString()) : false;
+var isUpgradeExecutionError = string.Equals(ViewBag.ErrorType as string, "upgrade_execution", StringComparison.OrdinalIgnoreCase);
+var upgradeErrorDetails = ViewBag.UpgradeErrorDetails as System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>;
+var upgradeAccessDecision = ViewBag.UpgradeSiteAccessDecision as Syncfusion.Server.Base.UpgradeSiteAccessDecision;
+var continueAccessUrl = GlobalAppSettings.SystemSettings.BaseUrl + (GlobalAppSettings.SystemSettings.BaseUrl.Contains("?") ? "&" : "?") + "continue-upgrade-access=true";
 }
 <!DOCTYPE html>
 <html>
@@ -21,16 +21,16 @@
     <script nonce="@Context.Items["ScriptNonce"]" src="~/bundles/js/error.js" integrity="@IntegrityTagHelper.GetIntegrity("bundles/js/error.js")" crossorigin="anonymous" asp-append-version="true"></script>
     <script nonce="@Context.Items["ScriptNonce"]" src="~/js/onpremiselocalizationcontent.js" asp-append-version="true"></script>
     <script nonce="@Context.Items["ScriptNonce"]">
-        var defaultErrorImageSrc = "@Url.Content(CloudAppConfig.FallbackLoginLogoUrl)";
-        document.addEventListener("DOMContentLoaded", function () {
-            var logoimage = document.getElementById("page-not-found-image-five-hundred");
-            if (logoimage) {
-                logoimage.onerror = function () {
-                    this.onerror = null;
-                    this.src = defaultErrorImageSrc;
-                };
-            }
-        });
+            var defaultErrorImageSrc = "@Url.Content(CloudAppConfig.FallbackLoginLogoUrl)";
+            document.addEventListener("DOMContentLoaded", function () {
+                var logoimage = document.getElementById("page-not-found-image-five-hundred");
+                if (logoimage) {
+                    logoimage.onerror = function () {
+                        this.onerror = null;
+                        this.src = defaultErrorImageSrc;
+                    };
+                }
+            });
     </script>
 </head>
 <body class="error-full-content">
@@ -102,8 +102,13 @@
                         <div class="take-me-back-to-home-page">
                             @if (upgradeAccessDecision?.CanAccessSite == true)
                             {
-                                <span class="error-page-cursor"><a class="error-to-back-text-color" href="@continueAccessUrl" style="color: var(--global-link-text-normal-color); text-decoration: underline;">@T["Continue to site"]</a></span>
-                                <span>@T["and review the application logs before retrying the upgrade."]</span>
+                                @Html.Raw(string.Format(T["{0}Go to home page{1} or {2}Create a support ticket{3} with application logs by referring to this {4}link{5}."].Value,
+                                $"<span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='" + continueAccessUrl + "'>",
+                                "</a></span>",
+                                $"</span><span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='https://support.{GlobalAppSettings.BrandingDomain}/create' target='_blank'>",
+                                "</a></span>",
+                                $"</span><span class='error-page-cursor'><a class='error-to-back-text-color text-decoration-none' href='{await HelpSiteManager.GetHelpSiteUrl(HelpSiteUrlNames.ErrorAndDebugLogs)}' target='_blank'>",
+                                "</a></span>"))
                             }
                             else
                             {

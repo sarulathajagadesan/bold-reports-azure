@@ -7,6 +7,8 @@
     var identifier = openIdSettings != null && openIdSettings.Identifier != null ? openIdSettings.Identifier : string.Empty;
     var responseType = openIdSettings != null && openIdSettings.ResponseType != null ? openIdSettings.ResponseType : "id_token";
     var logoutUrl = openIdSettings != null && openIdSettings.LogoutUrl != null ? openIdSettings.LogoutUrl : string.Empty;
+    var enableTokenStorage = openIdSettings != null && openIdSettings.EnableTokenStorage;
+    var usePkce = openIdSettings != null && openIdSettings.UsePkce;
     var logoUrl = ViewBag.OpenIDSettings != null && ViewBag.OpenIDSettings.LogoUrl != null ? ViewBag.OpenIDSettings.LogoUrl : string.Empty;
     var logoStyle = string.Empty;
     if (!string.IsNullOrWhiteSpace(logoUrl))
@@ -117,6 +119,28 @@
                         </select>
                     </div>
                     <div class="info-message no-padding">@T["Select the response type for OpenID authentication. The default type is id_token."] </div>
+                </div>
+
+                <div class="col-md-12 float-start no-padding switch-margin">
+                    <div class="material-switch inline-align">
+                        <input type="checkbox" id="enable-openid-token-storage" @(enableTokenStorage ? "checked" : string.Empty) @(isOpenIdEnabled ? string.Empty : "disabled") />
+                        <label for="enable-openid-token-storage" class="label-primary"></label>
+                    </div>
+                    <div class="app-textbox-label inline-align">
+                        @T["Enable Token Storage"]
+                    </div>
+                    <div class="info-message no-padding">@T["When enabled, access and refresh tokens returned by the OpenID Connect provider are stored securely on the server (encrypted at rest and access‑restricted). Tokens are used exclusively by server‑side components for authentication continuity and refresh operations and are never exposed to client‑side code or data source connectors."]</div>
+                </div>
+
+                <div class="col-md-12 float-start no-padding switch-margin">
+                    <div class="material-switch inline-align">
+                        <input type="checkbox" id="enable-openid-pkce" @(usePkce ? "checked" : string.Empty) @((isOpenIdEnabled && enableTokenStorage) ? string.Empty : "disabled") />
+                        <label for="enable-openid-pkce" class="label-primary"></label>
+                    </div>
+                    <div class="app-textbox-label inline-align">
+                        @T["Use PKCE"]
+                    </div>
+                    <div class="info-message no-padding">@T["Enables Proof Key for Code Exchange (PKCE) to protect the authorization code flow from interception attacks. This option is available only when Token Storage is enabled and Keycloak is used as the OpenID Connect provider. Strongly recommended for enhanced security, especially when tokens are stored on the server."]</div>
                 </div>
 
                 <div class="col-md-12 float-start no-padding input-field-margin">

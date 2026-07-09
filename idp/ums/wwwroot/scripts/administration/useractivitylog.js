@@ -1,7 +1,49 @@
-﻿var userdaterangeobj = ""
+﻿var applicationDateRangeObj = ""
+var loginDateRangeObj = ""
 var activityLogStartDateTime = ""
 var activityLogEndDateTime = ""
 var dropDownList = ""
+var gridLogin = null;
+var allEventTypeOptions = [];
+var loginEventTypeOptions = [];
+var allEventCategoryOptions = [];
+
+function getActivityLogViewQuery() {
+    return (window.location.search || '').toString();
+}
+
+function setActivityLogViewQuery(viewName) {
+    var query = getActivityLogViewQuery();
+    var expectedQuery = '?view=' + viewName;
+    if (query != expectedQuery) {
+        history.pushState(null, '', expectedQuery);
+    }
+}
+
+function activateActivityTab(tabSelector) {
+    var tabElement = $(tabSelector);
+    if (tabElement.length > 0) {
+        tabElement.tab('show');
+        $(tabSelector).closest('li').addClass('active');
+    }
+}
+
+function initializeActivityLogTabFromQuery() {
+    var query = getActivityLogViewQuery();
+    $("#activity-tab-nav li").removeClass("active");
+
+    if (query == '?view=login-activity') {
+        activateActivityTab('#login-activity-tab-link');
+        updateFilterUIForActiveTab();
+        loginActivityLogGrid();
+    }
+    else {
+        activateActivityTab('#audit-logs-tab-link');
+        updateFilterUIForActiveTab();
+        setActivityLogViewQuery('system-activity');
+    }
+}
+
 $(document).ready(function () {
     
     var specificEventType = [];
@@ -17,10 +59,35 @@ $(document).ready(function () {
         var eventCategoryList = {'text': eventCategory[i].Text, 'value': eventCategory[i].Value}
         specificEventCategory.push(eventCategoryList);
     }
+
+    allEventTypeOptions = specificEventType;
+    try {
+        if (typeof loginEventType !== 'undefined' && Array.isArray(loginEventType) && loginEventType.length > 0) {
+            loginEventTypeOptions = loginEventType.map(function (it) { return { text: it.Text, value: it.Value }; });
+        } else {
+            loginEventTypeOptions = [
+                { text: (window.Server && window.Server.App && window.Server.App.LocalizationContent && window.Server.App.LocalizationContent.Success) ? window.Server.App.LocalizationContent.Success : 'Success', value: 'Success' },
+                { text: (window.Server && window.Server.App && window.Server.App.LocalizationContent && window.Server.App.LocalizationContent.Failed) ? window.Server.App.LocalizationContent.Failed : 'Failed', value: 'Failed' },
+                { text: (window.Server && window.Server.App && window.Server.App.LocalizationContent && window.Server.App.LocalizationContent.Locked) ? window.Server.App.LocalizationContent.Locked : 'Locked', value: 'Locked' },
+                { text: (window.Server && window.Server.App && window.Server.App.LocalizationContent && window.Server.App.LocalizationContent.Unlocked) ? window.Server.App.LocalizationContent.Unlocked : 'Unlocked', value: 'Unlocked' }
+            ];
+        }
+    } catch (e) {
+        loginEventTypeOptions = [
+            { text: 'Success', value: 'Success' },
+            { text: 'Failed', value: 'Failed' },
+            { text: 'Locked', value: 'Locked' },
+            { text: 'Unlocked', value: 'Unlocked' }
+        ];
+    }
+    
+    allEventCategoryOptions = specificEventCategory;
     
     dropDownListInitializationForAdd('#user-event-type', 'EventType', '', '', '',specificEventType);
     dropDownListInitializationForAdd('#user-event-category', 'EventCategory', '', '', '',specificEventCategory);
-    userdaterangeobj = new ej.calendars.DateRangePicker({
+    var loginEventTypePlaceholder = (window.Server && window.Server.App && window.Server.App.LocalizationContent && window.Server.App.LocalizationContent.EventType) ? window.Server.App.LocalizationContent.EventType : 'Event Type';
+    dropDownListInitializationForAdd('#login-event-type', loginEventTypePlaceholder, '', '', '',loginEventTypeOptions);
+    applicationDateRangeObj = new ej.calendars.DateRangePicker({
         placeholder: 'Select a range',
         format: userActivityLogDateFormat,
         cssClass: 'e-custom',
@@ -35,7 +102,24 @@ $(document).ready(function () {
             { label: window.Server.App.LocalizationContent.ThisMonth, start: new Date(), end: new Date(new Date().setMonth(new Date().getMonth() + 1)) },
         ],
     });
-    userdaterangeobj.appendTo("#datePicker");
+    applicationDateRangeObj.appendTo("#applicationDatePicker");
+
+    loginDateRangeObj = new ej.calendars.DateRangePicker({
+        placeholder: 'Select a range',
+        format: userActivityLogDateFormat,
+        cssClass: 'e-custom',
+        presets: [
+            { label: window.Server.App.LocalizationContent.Today, start: new Date(), end: new Date() },
+            { label: window.Server.App.LocalizationContent.Yesterday, start: new Date(new Date().setDate(new Date().getDate() - 1)), end: new Date() },
+            { label: window.Server.App.LocalizationContent.Last7Days, start: new Date(new Date().setDate(new Date().getDate() - 7)), end: new Date() },
+            { label: window.Server.App.LocalizationContent.Last15Days, start: new Date(new Date().setDate(new Date().getDate() - 14)), end: new Date() },
+            { label: window.Server.App.LocalizationContent.Last30Days, start: new Date(new Date().setDate(new Date().getDate() - 30)), end: new Date() },
+            { label: window.Server.App.LocalizationContent.Last60Days, start: new Date(new Date().setDate(new Date().getDate() - 60)), end: new Date() },
+            { label: window.Server.App.LocalizationContent.ThisWeek, start: new Date(), end: new Date(new Date().setDate(new Date().getDate() + 7)) },
+            { label: window.Server.App.LocalizationContent.ThisMonth, start: new Date(), end: new Date(new Date().setMonth(new Date().getMonth() + 1)) },
+        ],
+    });
+    loginDateRangeObj.appendTo("#loginDatePicker");
 
     var activityLogDialog = new ejs.popups.Dialog({
         width: window.innerWidth > 380 ? "554px" : window.innerWidth - 10 + "px",
@@ -50,6 +134,19 @@ $(document).ready(function () {
     activityLogDialog.appendTo("#user-activity-log");
     
     userActivityLogGrid();
+    initializeActivityLogTabFromQuery();
+    $('#activity-tab-nav a[data-bs-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target).attr('href');
+        $("#activity-tab-nav li").removeClass("active");
+        $(e.target).closest("li").addClass("active");
+        updateFilterUIForActiveTab();
+        if (target === '#login-activity-tab') {
+            setActivityLogViewQuery('login-activity');
+            loginActivityLogGrid();
+        } else {
+            setActivityLogViewQuery('system-activity');
+        }
+    });
 })
 
 
@@ -64,6 +161,59 @@ function dropDownListInitializationForAdd(id, placeHolder, index, uniqueId, temp
     });
 
     dropDownList.appendTo(id);
+}
+
+function isLoginTabActive() {
+    return $('#login-activity-tab').hasClass('active');
+}
+
+function updateDropDownDataSource(elementId, dataSource) {
+    var element = document.getElementById(elementId);
+    if (!element || element.ej2_instances == null) {
+        return;
+    }
+
+    var dropDownInstance = element.ej2_instances[0];
+    var selectedValue = dropDownInstance.value;
+    dropDownInstance.dataSource = dataSource;
+
+    var matchingItem = dataSource.filter(function (item) {
+        return item.value === selectedValue;
+    });
+
+    if (matchingItem.length > 0) {
+        dropDownInstance.value = selectedValue;
+    } else {
+        dropDownInstance.value = null;
+        dropDownInstance.text = null;
+    }
+
+    dropDownInstance.dataBind();
+}
+
+function updateFilterUIForActiveTab() {
+    var isLoginActive = isLoginTabActive();
+    $('#event-category-filter-wrapper').toggle(!isLoginActive);
+
+    if (!isLoginActive) {
+        updateDropDownDataSource('user-event-type', allEventTypeOptions);
+        updateDropDownDataSource('user-event-category', allEventCategoryOptions);
+    }
+}
+
+function getActiveDateRangeValue() {
+    return isLoginTabActive() ? $('#loginDatePicker').val() : $('#applicationDatePicker').val();
+}
+
+function buildDateRangeParams(dateRangeValue) {
+    var dateRange = (dateRangeValue || '').split('-');
+    var startDate = $.trim(dateRange[0]) != "" ? $.trim(dateRange[0]) + " " + activityLogStartDateTime : "";
+    var endDate = $.trim(dateRange[1]) != "" ? $.trim(dateRange[1]) + " " + activityLogEndDateTime : "";
+
+    return {
+        startDate: startDate,
+        endDate: endDate
+    };
 }
 
 function userActivityLogGrid()
@@ -127,6 +277,59 @@ function userActivityLogGrid()
     }
 }
 
+function loginActivityLogGrid()
+{
+    if (document.getElementById('loginActivityLogGrid').ej2_instances == null) {
+        var data = new ejs.data.DataManager({
+            url: filterUserLoginLogsUrl,
+            adaptor: new ejs.data.UrlAdaptor(),
+            crossDomain: true
+        });
+        gridLogin = new ejs.grids.Grid({
+            dataSource: data,
+            gridLines: 'None',
+            allowPaging: true,
+            pageSettings: { pageSize: 20 },
+            allowSorting: true,
+            allowSearching: true,
+            enableAltRow: false,
+            enableHover: true,
+            allowSelection: true,
+            selectionSettings: { type: 'Multiple' },
+            rowSelecting: function (e) {
+                this.multiSelectCtrlRequest = true;
+            },
+            dataBound: function () {
+                var tooltipTriggerEl = document.querySelector('[data-bs-toggle="tooltip"]');
+                var tooltip = new bootstrap.Tooltip(tooltipTriggerEl, {
+                    container: 'body'
+                });
+            },
+            columns: [
+                {
+                    allowSorting:false,
+                    headerText:window.Server.App.LocalizationContent.EventDate,
+                    template:"#user-username-template",
+                    type:"string",
+                    width:30,
+                    allowFiltering:false,
+                },
+                { field: 'EventTypeString', headerText: window.Server.App.LocalizationContent.EventType, type: "string", width:15, allowFiltering: false, allowSorting: false },
+                { 
+                    headerText: window.Server.App.LocalizationContent.Summary,
+                    template: "#initiated-display-name",
+                    type: "string",
+                    width:34,
+                    allowFiltering: false,
+                    allowSorting: false
+                },
+                { field: 'IpAddress', headerText: 'IP Address', type: "string", width:21, allowFiltering: false, allowSorting: false }
+            ],
+        });
+        gridLogin.appendTo('#loginActivityLogGrid');
+    }
+}
+
 function closeItemInfo() {
     document.getElementById("user-activity-log").ej2_instances[0].hide();
 }
@@ -144,20 +347,31 @@ function userLogSetTimepickerValue() {
 
 $(document).on("click", "#apply-button", function () {
     userLogSetTimepickerValue();
-    var dateRange = $("#datePicker").val().split('-');
-    var startDate = $.trim(dateRange[0]) != "" ? $.trim(dateRange[0]) + " " + activityLogStartDateTime : "";
-    var endDate = $.trim(dateRange[1]) != "" ? $.trim(dateRange[1]) + " " + activityLogEndDateTime : "";
-    var eventType = document.getElementById("user-event-type").ej2_instances[0].value;
-    var eventCategory = document.getElementById("user-event-category").ej2_instances[0].value;
+    var dateParams = buildDateRangeParams(getActiveDateRangeValue());
+    var isLoginActive = isLoginTabActive();
+    var eventType = isLoginActive
+        ? document.getElementById("login-event-type").ej2_instances[0].value
+        : document.getElementById("user-event-type").ej2_instances[0].value;
+    var eventCategory = isLoginActive ? null : document.getElementById("user-event-category").ej2_instances[0].value;
     eventType = eventType != null ? eventType : null;
     eventCategory = eventCategory != null ? eventCategory : null;
-    var gridObj = document.getElementById("userActivityLogGrid").ej2_instances[0];
-    var userLogdata = new ej.data.DataManager({ url: filterUserLogsUrl + "?startDate=" + startDate + "&endDate=" + endDate + "&eventType=" + (eventType !== null ? eventType : '') + "&eventCategory=" + (eventCategory !== null ? eventCategory : ''), adaptor: new ej.data.UrlAdaptor() });
-    gridObj.dataSource = userLogdata;
+    if (isLoginActive && document.getElementById("loginActivityLogGrid").ej2_instances != null) {
+        var gridObj = document.getElementById("loginActivityLogGrid").ej2_instances[0];
+        var userLogdata = new ej.data.DataManager({ url: filterUserLoginLogsUrl + "?startDate=" + dateParams.startDate + "&endDate=" + dateParams.endDate + "&eventType=" + (eventType !== null ? eventType : '') + "&eventCategory=" + (eventCategory !== null ? eventCategory : ''), adaptor: new ej.data.UrlAdaptor() });
+        gridObj.dataSource = userLogdata;
+    } else {
+        var gridObj = document.getElementById("userActivityLogGrid").ej2_instances[0];
+        var userLogdata = new ej.data.DataManager({ url: filterUserLogsUrl + "?startDate=" + dateParams.startDate + "&endDate=" + dateParams.endDate + "&eventType=" + (eventType !== null ? eventType : '') + "&eventCategory=" + (eventCategory !== null ? eventCategory : ''), adaptor: new ej.data.UrlAdaptor() });
+        gridObj.dataSource = userLogdata;
+    }
 });
 
 $(document).on("click", "#refresh", function () {
-    grid.refresh();
+    if (isLoginTabActive()) {
+        gridLogin.refresh();
+    } else {
+        grid.refresh();
+    }
 });
 
 $(document).on("click", ".activity-log-info", function (args) {

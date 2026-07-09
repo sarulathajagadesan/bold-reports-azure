@@ -134,6 +134,33 @@ $(document).ready(function () {
         document.getElementById("login-provider-type").ej2_instances[0].text = selectedDefaultAuthText;
     }
 
+    if (providerNameCount != 0) {
+        // Record initial provider and enable Save only on user-initiated provider changes (ignore programmatic init).
+        var providerElem = document.getElementById("login-provider-type");
+        if (providerElem && providerElem.ej2_instances && providerElem.ej2_instances[0]) {
+            var loginProviderInstance = providerElem.ej2_instances[0];
+            var initialDefaultProvider = loginProviderInstance.value;
+            var defaultProviderInitCompleted = false;
+            setTimeout(function () { defaultProviderInitCompleted = true; }, 0);
+
+            function handleLoginProviderChange() {
+                if (!defaultProviderInitCompleted) return;
+                var currentVal = loginProviderInstance && loginProviderInstance.value !== undefined ? loginProviderInstance.value : (providerElem.value || '');
+                var isDifferent = currentVal.toString() !== (initialDefaultProvider || '').toString();
+                var shouldEnable = $("#enable-defaultauthentication").is(":checked") && isDifferent;
+                $("#update-defaultauthlogin-settings").prop("disabled", !shouldEnable);
+            }
+
+            // primary: EJ2 DropDownList change event (if available)
+            if (typeof loginProviderInstance.addEventListener === 'function') {
+                loginProviderInstance.addEventListener('change', handleLoginProviderChange);
+            }
+
+            // minimal fallback: native/select change
+            $(document).on('change', '#login-provider-type', handleLoginProviderChange);
+        }
+    }
+
     if (typeof defaultAuthEnabled !== "undefined") {
         $("#enable-defaultauthentication").prop("checked", !!defaultAuthEnabled);
     }
@@ -555,7 +582,14 @@ $(document).ready(function () {
 
     function syncOpenIdFieldState() {
         var isEnabled = $("#openidIsEnabled").is(":checked");
+        var tokenStorage = $("#enable-openid-token-storage");
+        var usePkce = $("#enable-openid-pkce");
         $("#openid-provider-name, #openid-image-upload-box .image-upload, #openid-authority, #openid-client-id, #openid-client-secret, #openid-identifier, #openid-logout-endpoint, #enable-openid-account-creation").prop("disabled", !isEnabled);
+        tokenStorage.prop("disabled", !isEnabled);
+        usePkce.prop("disabled", !(isEnabled && tokenStorage.is(":checked")));
+        if (!(isEnabled && tokenStorage.is(":checked"))) {
+            usePkce.prop("checked", false);
+        }
         document.getElementById("group-import-provider-openid").ej2_instances[0].enabled = isEnabled;
         document.getElementById("response-type-dropdown").ej2_instances[0].enabled = isEnabled;
         setGroupImportFieldState("openid", isEnabled);
@@ -632,6 +666,15 @@ $(document).ready(function () {
     $(document).on("change", "#openidIsEnabled", function () {
         syncOpenIdFieldState();
         validateOpenIdSettingsForm({ showErrors: false });
+    });
+
+    $(document).on("change", "#enable-openid-token-storage", function () {
+        var isEnabled = $("#openidIsEnabled").is(":checked");
+        var tokenStorageEnabled = $(this).is(":checked");
+        $("#enable-openid-pkce").prop("disabled", !(isEnabled && tokenStorageEnabled));
+        if (!(isEnabled && tokenStorageEnabled)) {
+            $("#enable-openid-pkce").prop("checked", false);
+        }
     });
 
     $(document).on("input blur", "#openid-provider-name, #openid-authority, #openid-client-id, #openid-client-secret, #openid-identifier, #openid-logout-endpoint", function () {
@@ -1345,6 +1388,8 @@ $(document).ready(function () {
                         LogoutUrl: $("input[name='openidLogoutUrl']").val().trim(),
                         GroupImportSettings: getGroupImportSettings("openid"),
                         CanCreateAccount: $("#enable-openid-account-creation").is(":checked"),
+                        EnableTokenStorage: $("#enable-openid-token-storage").is(":checked"),
+                        UsePkce: $("#enable-openid-pkce").is(":checked"),
                         ResponseType: document.getElementById("response-type-dropdown").ej2_instances[0].value
                     }
                 };
@@ -1366,8 +1411,9 @@ $(document).ready(function () {
         return authSettingsData;
     }
 
-    window.validateOAuthSettingsForm = validateOAuthSettingsForm;
-    window.validateOpenIdSettingsForm = validateOpenIdSettingsForm;
+    window.BoldId = window.BoldId || {};
+    window.BoldId.validateOAuthSettingsForm = validateOAuthSettingsForm;
+    window.BoldId.validateOpenIdSettingsForm = validateOpenIdSettingsForm;
 
     var oauthUploadBox = $("#oauth-image-upload-box");
     var openidUploadBox = $("#openid-image-upload-box");
@@ -1641,11 +1687,11 @@ $('#oauth-group-import input[type="text"], #openid-group-import input[type="text
         inputFieldMargin.removeClass('has-error');
     }
 
-    if ($(this).closest("#oauth-group-import").length && typeof window.validateOAuthSettingsForm === "function") {
-        window.validateOAuthSettingsForm({ showErrors: true });
+    if ($(this).closest("#oauth-group-import").length && window.BoldId && typeof window.BoldId.validateOAuthSettingsForm === "function") {
+        window.BoldId.validateOAuthSettingsForm({ showErrors: true });
     }
-    else if ($(this).closest("#openid-group-import").length && typeof window.validateOpenIdSettingsForm === "function") {
-        window.validateOpenIdSettingsForm({ showErrors: true });
+    else if ($(this).closest("#openid-group-import").length && window.BoldId && typeof window.BoldId.validateOpenIdSettingsForm === "function") {
+        window.BoldId.validateOpenIdSettingsForm({ showErrors: true });
     }
 });
 
@@ -1796,11 +1842,11 @@ $(document).on("keypress", "#dialog", function (ev) {
             break;
     }
 
-    if (args.element.id === 'group-import-provider-oauth' && typeof window.validateOAuthSettingsForm === "function") {
-        window.validateOAuthSettingsForm({ showErrors: false });
+    if (args.element.id === 'group-import-provider-oauth' && window.BoldId && typeof window.BoldId.validateOAuthSettingsForm === "function") {
+        window.BoldId.validateOAuthSettingsForm({ showErrors: false });
     }
-    else if (args.element.id === 'group-import-provider-openid' && typeof window.validateOpenIdSettingsForm === "function") {
-        window.validateOpenIdSettingsForm({ showErrors: false });
+    else if (args.element.id === 'group-import-provider-openid' && window.BoldId && typeof window.BoldId.validateOpenIdSettingsForm === "function") {
+        window.BoldId.validateOpenIdSettingsForm({ showErrors: false });
     }
 }
 

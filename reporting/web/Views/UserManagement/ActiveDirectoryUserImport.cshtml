@@ -101,7 +101,7 @@
                 });
                 if (typeof ej != "undefined" && typeof ej.UrlAdaptor != "undefined") {
                     ej.UrlAdaptor.prototype.beforeSend = function (dm, request) {
-                        request.setRequestHeader("X-XSRF-TOKEN", extractXSRFTokenFromCookie());
+                        request.setRequestHeader("X-BRS-XSRF-TOKEN", extractXSRFTokenFromCookie());
                     };
                 }
                 </text>
@@ -115,7 +115,7 @@
                 });
                 if (typeof ej != "undefined" && typeof ej.UrlAdaptor != "undefined") {
                     ej.UrlAdaptor.prototype.beforeSend = function (dm, request) {
-                        request.setRequestHeader("X-XSRF-TOKEN", extractXSRFTokenFromCookie());
+                        request.setRequestHeader("X-BRS-XSRF-TOKEN", extractXSRFTokenFromCookie());
                     };
                 }
                 </text>

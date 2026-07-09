@@ -36,9 +36,40 @@ ALTER TABLE BOLDRS_SubscribedGroup ADD IsCC NUMBER(1) DEFAULT 0 NOT NULL;
 
 ALTER TABLE BOLDRS_SubscrExtnRecpt ADD IsCC NUMBER(1) DEFAULT 0 NOT NULL;
 ALTER TABLE BOLDRS_ScheduleDetail ADD (ExportTypes VARCHAR2(500));
-ALTER TABLE BOLDRS_ScheduleDetail ADD DataDrivenScheduleDetails  VARCHAR2(4000)  NULL;
+ALTER TABLE BOLDRS_ScheduleDetail ADD DataDrivenScheduleDetails  CLOB  NULL;
 ALTER TABLE BOLDRS_ScheduleDetail ADD IsDataDrivenSchedule NUMBER(1);
 ALTER TABLE BOLDRS_Schedulelog ADD RowDetails  VARCHAR2(8000)  NULL;
 ALTER TABLE BOLDRS_Schedulelog ADD IsDataDriven NUMBER(1);
 ALTER TABLE BOLDRS_ScheduleLog ADD ExportFileName VARCHAR2(255) NULL;
 ALTER TABLE BOLDRS_ScheduleLog ADD IsFileActive NUMBER(1,0) NOT NULL DEFAULT 0;
+
+CREATE TABLE BOLDRS_ReportCopyLog (
+    Id RAW(16) NOT NULL PRIMARY KEY,
+    BatchId RAW(16) NULL,
+    IsBulkCopy NUMBER(1) NOT NULL,
+    SourceItemId RAW(16) NOT NULL,
+    SourceItemName VARCHAR2(255) NOT NULL,
+    SourceCategoryId RAW(16) NULL,
+    SourceCategoryName VARCHAR2(255) NULL,
+    SourceTenantId RAW(16) NOT NULL,
+    CopySiteType VARCHAR2(255) NULL,
+    ExternalSiteUrl VARCHAR2(255) NULL,
+    DestinationTenantId RAW(16) NOT NULL,
+    DestinationTenantName VARCHAR2(255) NOT NULL,
+    DestinationCategoryPath VARCHAR2(1000) NOT NULL,
+    DestinationCategoryId RAW(16) NULL,
+    DestinationItemId RAW(16) NULL,
+    DestinationItemName VARCHAR2(255) NOT NULL,
+    IsOverwrite NUMBER(1) NOT NULL,
+    CopiedByUserId NUMBER NOT NULL,
+    CopiedAt TIMESTAMP NOT NULL,
+    Status VARCHAR2(50) NOT NULL,
+    FailureReason CLOB NULL
+);
+
+ALTER TABLE BOLDRS_ReportCopyLog ADD CONSTRAINT fk_reportcopylog_user FOREIGN KEY (CopiedByUserId) REFERENCES BOLDRS_User(Id);
+
+ALTER TABLE BOLDRS_ReportCopyLog ADD CONSTRAINT fk_reportcopylog_item FOREIGN KEY (SourceItemId) REFERENCES BOLDRS_Item(Id);
+
+-- Update existing NULL ScheduleRunStatus values to 'Idle'
+UPDATE BOLDRS_ScheduleDetail SET ScheduleRunStatus = 'Idle' WHERE ScheduleRunStatus IS NULL;

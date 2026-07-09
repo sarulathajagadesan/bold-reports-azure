@@ -81,11 +81,13 @@
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/tile-dashboards-page.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/tile-dashboards-page.css")" crossorigin="anonymous" />
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/tile-dashboards-page.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/tile-dashboards-page.js")" crossorigin="anonymous"></script>
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/publish-report.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/publish-report.js")" crossorigin="anonymous"></script>
+        <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/itemaction.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/itemaction.js")" crossorigin="anonymous"></script>
     </environment>
     <environment exclude="Development,CloudDevelopment">
         <link rel="stylesheet" asp-append-version="true" href="@reportServerResourceUrl/cdn/css/tile-dashboards-page.min.css" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/css/tile-dashboards-page.min.css")" crossorigin="anonymous" />
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/tile-dashboards-page.min.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/tile-dashboards-page.min.js")" crossorigin="anonymous"></script>
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/publish-report.min.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/publish-report.min.js")" crossorigin="anonymous"></script>
+        <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/cdn/scripts/itemaction.min.js" integrity="@IntegrityTagHelper.GetIntegrity("wwwroot/cdn/scripts/itemaction.min.js")" crossorigin="anonymous"></script>
 
     </environment>
 }
@@ -104,6 +106,7 @@
         var removePublicUrl = "@Url.Action("RemovePublic", "items")";
         var getLinkDialogViewUrl = "@Url.Action("GetLinkView", "items")";
         var viewSchedulesUrl = "@Url.Action("Schedules", "Scheduler")";
+        var copyreportIframeUrl = "@Url.Action("CopyViewItems", "items")";
         var copyIframeUrl = "@Url.Action("copyviewitem", "items")";
         var moveIframeUrl = "@Url.Action("moveviewitem", "items")";
         var permissionIframeUrl = "@Url.Action("ItemPermissionView", "items")";
@@ -238,7 +241,7 @@
                         <div class="col-12 no-padding">
                             <span class="category-icon su su-categoried-dashboard"></span>
                             <span class="category-bar-header">[[[Categories]]]</span>
-                            <div id="category-sort-dropdown" class="category-filter-sort float-end dropdown display-none" data-dashboard-visibility="category-sort-dropdown">
+                            <div id="category-sort-dropdown" class="category-filter-sort float-end dropdown" data-dashboard-visibility="category-sort-dropdown">
                                 <span class="dropdown-bs-toggle" data-bs-toggle="dropdown">
                                     <span class="su su-sort" data-bs-toggle="tooltip" title="[[[Sort]]]"></span>
                                 </span>
@@ -277,7 +280,7 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="col-xs-12 no-padding display-none category-slide" data-dashboard-visibility="category-slide" style="display: none;">
+                        <div class="col-xs-12 no-padding category-slide" data-dashboard-visibility="category-slide" style="display: none;">
                             <div class="category-search-area float-end">
                                 <input type="text" class="category-search-box float-start no-margin" id="category-search-input" data-dashboard-search="category" placeholder="[[[Search Categories]]]" />
                                 <span class="su close-icon su-inner-close float-start no-margin display-none" data-dashboard-visibility="category-search-clear" data-dashboard-action="clear-category-search" data-bs-toggle="tooltip" data-container="body" title="[[[Clear search]]]"></span>
@@ -288,7 +291,7 @@
                                     <div id="category-scroll-content" class="col-xs-12 no-padding">
                                         <!-- Category items rendered by JS renderCategoryLevel0Lists() -->
                                         <ul class="col-xs-12 no-padding" id="category-level0-list">
-                                        </ul>
+                                                            </ul>
                                         <div class="category-empty-message-div col-12 display-none" data-dashboard-visibility="empty-category">
                                             <span class="category-empty-message">[[[No categories available to display.]]]</span>
                                         </div>
@@ -306,8 +309,8 @@
                         <h4 class="card-title" id="recent-section-title">Recent</h4>
                         <div class="row" id="recent-items-container">
                             <!-- Recent items rendered by JS -->
-                        </div>
-                    </div>
+                                        </div>
+                                        </div>
                 }
                 <div class="dashboard-action-container col-12 no-padding">
                     <div class="col-5 col-lg-5 col-md-7 col-sm-10 no-padding category-info-container" data-dashboard-visibility="category-info-container">
@@ -317,10 +320,16 @@
                                     @Html.CheckBox("dashboard-list-select-all", false, new { @class = "material-checkbox", @autocomplete = "off", @id = "dashboard-list-select-all" })
                                     <label for="dashboard-list-select-all" class="dashboard-select-all-checkbox"></label>
                                 </div>
-                                <li class="download-icon selected display-none" data-dashboard-action="bulk-download-reports" style="display:none">
+                                <li class="download-icon selected" data-dashboard-action="bulk-download-reports" style="display:none">
                                     <a class="dashboard-sort-options prevent-default-action" href="#">
                                         <i class="su su-download"></i>
                                         <span class="search-option">[[[Download]]]</span>
+                                    </a>
+                                </li>
+                                <li class="copy-icon selected" data-dashboard-action="copy-bulk-report" style="display:none">
+                                    <a class="dashboard-sort-options prevent-default-action" href="#">
+                                        <i class="su su-copy"></i>
+                                        <span class="search-option">[[[Copy]]]</span>
                                     </a>
                                 </li>
                                 <label id="action-separator" class="sf-nav-separator action-separator"></label>
@@ -368,11 +377,11 @@
                     <div class="dashboard-dropdown-container col-7 col-lg-7 col-md-5 col-sm-2 no-padding">
                         <div class="dashboard-view-container display-none" id="dashboard-view-dropdown" data-dashboard-visibility="layout-view-container">
                             <span id="view-menu-border" class="dropdown-bs-toggle" data-bs-toggle="dropdown">
-                                <span title="Card View" data-dashboard-layout="card-view-indicator">
+                                <span title="Card View" data-dashboard-layout="card-view-indicator" class="active-layout-view">
                                     <span class="view-icon su-card"></span>
                                     <span class="su-dropdown-arrow"></span>
                                 </span>
-                                <span title="Grid View" data-dashboard-layout="grid-view-indicator">
+                                <span title="Grid View" data-dashboard-layout="grid-view-indicator" class="inactive-layout-view">
                                     <span class="view-icon su-grid"></span>
                                     <span class="su-dropdown-arrow"></span>
                                 </span>
@@ -481,7 +490,7 @@
                                             </div>
                                             <div class="col-12 open-link no-padding">
                                                     <a class="col-12 no-padding" href="#" target="@targetValue">
-                                                        <div class="col-12 report-details add-custom-padding-style" data-dashboard-layout="report-details">
+                                                        <div class="col-12 report-details add-custom-padding-report" data-dashboard-layout="report-details">
                                                             <span class="dashboard-name no-padding" data-dashboard-layout="dashboard-name-width">
                                                                 <span data-dashboard-field="item-name"></span>
                                                                 <span class="display-none" data-dashboard-visibility-item="tile-multi-tab">
@@ -622,15 +631,15 @@
                                                                 <span>[[[Clone]]]</span>
                                                             </span>
                                                         </li>
-                                                    }
+                                                    }                                                    
                                                     @if(isMasterTenant && ServerAppConfig.IsSelfHosted)
                                                     {
                                                         <li class="display-none" data-dashboard-visibility-item="ctx-publish">
                                                             <span title="" class="option-click" data-action="Publish" data-dashboard-action="get-publish-site-detail-dialog">
-                                                                <i class="su su-publish"></i>
-                                                                <span>[[[Publish]]]</span>
-                                                            </span>
-                                                        </li>
+                                                            <i class="su su-publish"></i>
+                                                            <span>[[[Publish]]]</span>
+                                                        </span>
+                                                    </li>
                                                     }
                                                     <li role="separator" class="divider display-none" data-dashboard-visibility-item="ctx-sep-schedule"></li>
                                                     <li class="display-none" data-dashboard-visibility-item="ctx-create-schedule">
@@ -775,7 +784,7 @@
                                                             <span class="author-name col-12 no-padding display-none" data-dashboard-visibility-item="tile-description">
                                                                 <span data-dashboard-field="item-description"></span>
                                                             </span>
-                                                        </span>
+                                                            </span>
                                                     </div>
                                                     <div class="col-12 report-tile-footer" data-dashboard-visibility-item="tile-footer">
                                                         <div class="footer-owner-name col-3 no-padding display-none" title="[[[Owner]]]" data-dashboard-visibility-item="tile-author-name">

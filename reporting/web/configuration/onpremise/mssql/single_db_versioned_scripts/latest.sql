@@ -42,3 +42,35 @@ ALTER TABLE [BOLDRS_SubscrExtnRecpt] ADD [IsCC] BIT NOT NULL DEFAULT 0;
 ALTER TABLE [BOLDRS_ScheduleDetail] ADD [ExportTypes] [nvarchar](500) NULL;
 ALTER TABLE [BOLDRS_Schedulelog] ADD [RowDetails]  varchar(8000)  NULL;
 ALTER TABLE [BOLDRS_Schedulelog] ADD [IsDataDriven] smallint NOT NULL DEFAULT 0;
+
+CREATE TABLE [BOLDRS_ReportCopyLog](
+    [Id] [uniqueidentifier] NOT NULL PRIMARY KEY,
+    [SiteId] [uniqueidentifier] NOT NULL,
+    [BatchId] [uniqueidentifier] NULL,
+    [IsBulkCopy] [bit] NOT NULL,
+    [SourceItemId] [uniqueidentifier] NOT NULL,
+    [SourceItemName] [nvarchar](255) NOT NULL,
+    [SourceCategoryId] [uniqueidentifier] NULL,
+    [SourceCategoryName] [nvarchar](255) NULL,
+    [SourceTenantId] [uniqueidentifier] NOT NULL,
+	[CopySiteType] [nvarchar](255) NULL,
+	[ExternalSiteUrl] [nvarchar](255) NULL,
+    [DestinationTenantId] [uniqueidentifier] NOT NULL,
+    [DestinationTenantName] [nvarchar](255) NOT NULL,
+    [DestinationCategoryPath] [nvarchar](1000) NOT NULL,
+    [DestinationCategoryId] [uniqueidentifier] NULL,
+    [DestinationItemId] [uniqueidentifier] NULL,
+    [DestinationItemName] [nvarchar](255) NOT NULL,
+    [IsOverwrite] [bit] NOT NULL,
+    [CopiedByUserId] [int] NOT NULL,
+    [CopiedAt] [datetime] NOT NULL,
+    [Status] [nvarchar](50) NOT NULL,
+    [FailureReason] [nvarchar](max) NULL)
+;
+
+ALTER TABLE [BOLDRS_ReportCopyLog] ADD FOREIGN KEY([CopiedByUserId]) REFERENCES [BOLDRS_User] ([Id])
+;
+ALTER TABLE [BOLDRS_ReportCopyLog] ADD FOREIGN KEY([SourceItemId]) REFERENCES [BOLDRS_Item] ([Id])
+;
+-- Update existing NULL ScheduleRunStatus values to 'Idle'
+UPDATE [BOLDRS_ScheduleDetail] SET [ScheduleRunStatus] = 'Idle' WHERE [ScheduleRunStatus] IS NULL;

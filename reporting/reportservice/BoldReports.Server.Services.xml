@@ -127,6 +127,12 @@
             Controller for Data Connectors.
             </summary>
         </member>
+        <member name="M:BoldReports.Server.Services.CacheStorageSettings.DeleteExpiredBlobsWithErrorHandling">
+            <summary>
+            Wrapper for DeleteExpiredBlobs with proper error handling and logging.
+            This method prevents exceptions from being silently swallowed in fire-and-forget tasks.
+            </summary>
+        </member>
         <member name="T:BoldReports.Server.Services.CacheManager">
             <summary>
             Manages the caching of data in memory
@@ -281,6 +287,600 @@
             <summary>
             Represents configuration settings for rate limiting
             </summary>
+        </member>
+        <member name="T:BoldReports.Server.Services.StorageType">
+            <summary>
+            Enum representing the types of storage available.
+            </summary>
+        </member>
+        <member name="F:BoldReports.Server.Services.StorageType.FileStorage">
+            <summary>
+            File system storage.
+            </summary>
+        </member>
+        <member name="F:BoldReports.Server.Services.StorageType.AzureBlob">
+            <summary>
+            Microsoft Azure Blob storage.
+            </summary>
+        </member>
+        <member name="F:BoldReports.Server.Services.StorageType.Redis">
+            <summary>
+            Redis cache storage.
+            </summary>
+        </member>
+        <member name="F:BoldReports.Server.Services.StorageType.AmazonS3">
+            <summary>
+            Amazon Web Services S3 storage.
+            </summary>
+        </member>
+        <member name="F:BoldReports.Server.Services.StorageType.OCIObjectStorage">
+            <summary>
+            Oracle Cloud Infrastructure Object Storage.
+            </summary>
+        </member>
+        <member name="T:BoldReports.Server.Services.Storage.Abstractions.StorageItemInfo">
+            <summary>
+            Represents a blob item with its name and last modified time.
+            </summary>
+        </member>
+        <member name="T:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider">
+            <summary>
+            Defines a common abstraction for storage operations across all providers (Local, Azure, S3, OCI).
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetLastModifiedTime(System.String)">
+            <summary>
+            Gets the last modified time of the specified blob.
+            </summary>
+            <param name="blobName">The name or path of the blob.</param>
+            <returns>The <see cref="T:System.DateTime"/> when the blob was last modified.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.UploadFrombyteArray(System.Byte[],System.String,System.DateTime)">
+            <summary>
+            Uploads the provided byte array to storage using the given blob name and associates it with a report time.
+            </summary>
+            <param name="value">The data to upload.</param>
+            <param name="blobName">The target blob name or path.</param>
+            <param name="reportTime">The report time to associate with the uploaded item.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.DownloadToText(System.String)">
+            <summary>
+            Downloads the content of the specified blob and returns it as a text string.
+            </summary>
+            <param name="sourceBlobName">The name or path of the source blob.</param>
+            <returns>The blob content as a string.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.DownloadToStream(System.String)">
+            <summary>
+            Downloads the content of the specified blob as a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="sourceBlobName">The name or path of the source blob.</param>
+            <returns>A <see cref="T:System.IO.Stream"/> containing the blob data.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.UploadFromStream(System.IO.Stream,System.String)">
+            <summary>
+            Uploads the content of the specified stream to the object storage.
+            </summary>
+            <param name="stream">The stream containing the data to upload.</param>
+            <param name="destinationBlobName">The object key where the content will be stored.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.DownloadToByteArray(System.String)">
+            <summary>
+            Downloads the content of the specified blob and returns it as a byte array.
+            </summary>
+            <param name="blobName">The name or path of the blob.</param>
+            <returns>The blob content as a byte array.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.DeleteBlobItem(System.String)">
+            <summary>
+            Deletes the specified blob item from storage.
+            </summary>
+            <param name="blobPath">The name or path of the blob to delete.</param>
+            <returns><c>true</c> if the blob was deleted; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetBlobItems(System.String)">
+            <summary>
+            Gets a list of blob items under the specified prefix, including their names and last modified times.
+            </summary>
+            <param name="prefix">The prefix to filter blobs.</param>
+            <returns>A list of <see cref="T:BoldReports.Server.Services.Storage.Abstractions.StorageItemInfo"/> objects.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetAppDataFolderPath">
+            <summary>
+            Gets the application data folder path based on storage type.
+            </summary>
+            <returns>The application data folder path.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetConfigJsonPath">
+            <summary>
+            Gets the configuration JSON file path.
+            </summary>
+            <returns>The configuration JSON path.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetProductJsonPath">
+            <summary>
+            Gets the product JSON file path.
+            </summary>
+            <returns>The product JSON path.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetReportingConfigPath">
+            <summary>
+            Gets the reporting configuration folder path.
+            </summary>
+            <returns>The reporting configuration path.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetPrivateKeyPath">
+            <summary>
+            Gets the private key file path.
+            </summary>
+            <returns>The private key path.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.GetResourcePath">
+            <summary>
+            Gets the resource folder path.
+            </summary>
+            <returns>The resource path.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider.IsAzureStorage">
+            <summary>
+            Determines whether this provider uses Azure Blob Storage.
+            </summary>
+            <returns><c>true</c> if using Azure storage; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:BoldReports.Server.Services.Storage.Abstractions.IStorageProviderFactory">
+            <summary>
+            Defines a factory abstraction for resolving the active storage provider.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Abstractions.IStorageProviderFactory.CreateProvider(BoldReports.Server.Services.StorageAPIResponse)">
+            <summary>
+            Creates the active storage provider using the specified storage API response.
+            </summary>
+            <param name="storageResponse">The storage API response containing provider configuration.</param>
+            <returns>The resolved storage provider instance.</returns>
+        </member>
+        <member name="T:BoldReports.Server.Services.Storage.Factory.StorageProviderFactory">
+            <summary>
+            Factory for creating storage provider instances based on the storage API response.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Factory.StorageProviderFactory.CreateProvider(BoldReports.Server.Services.StorageAPIResponse)">
+            <summary>
+            Creates the active storage provider using the specified storage API response.
+            </summary>
+            <param name="storageResponse">The storage API response containing provider configuration.</param>
+            <returns>An instance of the requested storage provider.</returns>
+        </member>
+        <member name="T:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider">
+            <summary>
+            Implementation of <see cref="T:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider"/> for Azure Blob Storage.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.ConnectionString">
+            <summary>
+            Gets the Azure Blob connection string.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.ContainerName">
+            <summary>
+            Gets the Azure Blob container name.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.AccountName">
+            <summary>
+            Gets the Azure Blob storage account name.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.AccessKey">
+            <summary>
+            Gets the Azure Blob storage access key.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.StorageUri">
+            <summary>
+            Gets the Azure Blob storage URI.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.ConnectionType">
+            <summary>
+            Gets the Azure Blob connection type (http, https, or CustomEndPoint).
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.#ctor(BoldReports.Server.Services.StorageAPIAzureBlob)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider"/> class
+            with the specified Azure Blob storage configuration.
+            </summary>
+            <param name="azureBlobSettings">The Azure Blob settings.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetLastModifiedTime(System.String)">
+            <summary>
+            Gets the last modified time for the specified blob. If a custom metadata
+            value named <c>LastModifiedTime</c> exists it will be parsed and returned;
+            otherwise the blob's <c>LastModified</c> property is returned.
+            </summary>
+            <param name="blobName">The name or path of the blob.</param>
+            <returns>The last modified <see cref="T:System.DateTime"/> in UTC, or <see cref="F:System.DateTime.MinValue"/> if not found.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.UploadFrombyteArray(System.Byte[],System.String,System.DateTime)">
+            <summary>
+            Uploads the specified byte array to Azure Blob Storage at the given blob name
+            and attempts to set a metadata entry for the provided report time.
+            </summary>
+            <param name="value">The data to upload.</param>
+            <param name="blobName">The target blob name or path.</param>
+            <param name="reportTime">The report time to store in metadata.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.DownloadToText(System.String)">
+            <summary>
+            Downloads the blob content identified by <paramref name="sourceBlobName"/> and returns it as a string.
+            </summary>
+            <param name="sourceBlobName">The name or path of the source blob.</param>
+            <returns>The blob content as a string, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.DownloadToStream(System.String)">
+            <summary>
+            Downloads the blob content identified by <paramref name="sourceBlobName"/> and returns it as a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="sourceBlobName">The name or path of the source blob.</param>
+            <returns>A <see cref="T:System.IO.Stream"/> containing the blob data, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.UploadFromStream(System.IO.Stream,System.String)">
+            <summary>
+            Uploads the content of the specified stream to the object storage.
+            </summary>
+            <param name="stream">The stream containing the data to upload.</param>
+            <param name="destinationBlobName">The object key where the content will be stored.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.DownloadToByteArray(System.String)">
+            <summary>
+            Downloads the blob content identified by <paramref name="blobName"/> and returns it as a byte array.
+            </summary>
+            <param name="blobName">The name or path of the blob.</param>
+            <returns>The blob content as a byte array, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.DeleteBlobItem(System.String)">
+            <summary>
+            Deletes the blob identified by <paramref name="blobPath"/> from the container.
+            </summary>
+            <param name="blobPath">The name or path of the blob to delete.</param>
+            <returns><c>true</c> if the blob was deleted; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetBlobItems(System.String)">
+            <summary>
+            Gets a list of blob items under the specified prefix, including their names and last modified times.
+            </summary>
+            <param name="prefix">The prefix to filter blobs.</param>
+            <returns>A list of <see cref="T:BoldReports.Server.Services.Storage.Abstractions.StorageItemInfo"/> objects.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetAppDataFolderPath">
+            <summary>
+            Gets the application data folder path for Azure Blob storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetConfigJsonPath">
+            <summary>
+            Gets the configuration JSON path for Azure Blob storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetProductJsonPath">
+            <summary>
+            Gets the product JSON path for Azure Blob storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetReportingConfigPath">
+            <summary>
+            Gets the reporting configuration path for Azure Blob storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetPrivateKeyPath">
+            <summary>
+            Gets the private key path for Azure Blob storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.GetResourcePath">
+            <summary>
+            Gets the resource path for Azure Blob storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.AzureBlobStorageProvider.IsAzureStorage">
+            <summary>
+            Determines whether this provider uses Azure Blob Storage.
+            </summary>
+            <returns><c>true</c> if using Azure storage; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:BoldReports.Server.Services.Storage.Providers.OciStorageProvider">
+            <summary>
+            Implementation of <see cref="T:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider"/> for OCI Object Storage.
+            NOTE: OCI provider stub - full implementation requires OCI SDK at runtime.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.Region">
+            <summary>
+            Gets the OCI region.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.BucketName">
+            <summary>
+            Gets the OCI bucket name.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.AccessKey">
+            <summary>
+            Gets the OCI access key.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.SecretKey">
+            <summary>
+            Gets the OCI secret key.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.OCINameSpace">
+            <summary>
+            Gets the OCI namespace.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.RootFolderName">
+            <summary>
+            Gets the root folder name in OCI.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.#ctor(BoldReports.Server.Services.StorageAPIOCIObject)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoldReports.Server.Services.Storage.Providers.OciStorageProvider"/> class
+            with the specified OCI Object Storage settings.
+            </summary>
+            <param name="ociObjectSettings">The OCI Object Storage settings.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetLastModifiedTime(System.String)">
+            <summary>
+            Gets the last modified time for the specified OCI object.
+            </summary>
+            <param name="blobName">The object name in the OCI bucket.</param>
+            <returns>The last modified <see cref="T:System.DateTime"/> in UTC, or <see cref="F:System.DateTime.MinValue"/> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.UploadFrombyteArray(System.Byte[],System.String,System.DateTime)">
+            <summary>
+            Uploads the provided byte array to OCI Object Storage using the configured namespace and bucket.
+            This implementation uses a dynamic client and attempts to call a synchronous PutObject method.
+            </summary>
+            <param name="value">The bytes to upload.</param>
+            <param name="blobName">The target object name.</param>
+            <param name="reportTime">The report time (currently not persisted in OCI metadata by this stub).</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.CreateObject(System.String)">
+            <summary>
+            Creates a folder marker (empty blob with trailing slash) in OCI Object Storage.
+            </summary>
+            <param name="folderPath">The folder path to create.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.DownloadToText(System.String)">
+            <summary>
+            Downloads the specified OCI object and returns its content as a string.
+            </summary>
+            <param name="sourceBlobName">The object name to download.</param>
+            <returns>The object content as text, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.DownloadToStream(System.String)">
+            <summary>
+            Downloads the specified OCI object and returns its content as a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="sourceBlobName">The object name to download.</param>
+            <returns>A <see cref="T:System.IO.Stream"/> containing the object data, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.UploadFromStream(System.IO.Stream,System.String)">
+            <summary>
+            Uploads the content of the specified stream to the object storage.
+            </summary>
+            <param name="stream">The stream containing the data to upload.</param>
+            <param name="destinationBlobName">The object key where the content will be stored.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.DownloadToByteArray(System.String)">
+            <summary>
+            Downloads the specified OCI object and returns its content as a byte array.
+            </summary>
+            <param name="blobName">The object name to download.</param>
+            <returns>The object content as a byte array, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.DeleteBlobItem(System.String)">
+            <summary>
+            Deletes the specified object from OCI Object Storage.
+            </summary>
+            <param name="blobPath">The object name to delete.</param>
+            <returns><c>true</c> if the deletion succeeded; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetBlobItems(System.String)">
+            <summary>
+            Gets a list of blob items under the specified prefix, including their names and last modified times.
+            </summary>
+            <param name="prefix">The prefix to filter objects.</param>
+            <returns>A list of <see cref="T:BoldReports.Server.Services.Storage.Abstractions.StorageItemInfo"/> objects.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetAppDataFolderPath">
+            <summary>
+            Gets the application data folder path for OCI Object Storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetConfigJsonPath">
+            <summary>
+            Gets the configuration JSON path for OCI Object Storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetProductJsonPath">
+            <summary>
+            Gets the product JSON path for OCI Object Storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetReportingConfigPath">
+            <summary>
+            Gets the reporting configuration path for OCI Object Storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetPrivateKeyPath">
+            <summary>
+            Gets the private key path for OCI Object Storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.GetResourcePath">
+            <summary>
+            Gets the resource path for OCI Object Storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.OciStorageProvider.IsAzureStorage">
+            <summary>
+            Determines whether this provider uses Azure Blob Storage.
+            </summary>
+            <returns><c>true</c> if using Azure storage; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="T:BoldReports.Server.Services.Storage.Providers.S3StorageProvider">
+            <summary>
+            Implementation of <see cref="T:BoldReports.Server.Services.Storage.Abstractions.IStorageProvider"/> for Amazon S3 storage.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.Region">
+            <summary>
+            Gets the AWS region.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.BucketName">
+            <summary>
+            Gets the S3 bucket name.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.AccessKeyId">
+            <summary>
+            Gets the AWS access key ID.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.AccessKeySecret">
+            <summary>
+            Gets the AWS secret access key.
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.RootFolderName">
+            <summary>
+            Gets the root folder name in S3.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.#ctor(BoldReports.Server.Services.StorageAPIAmazonS3)">
+            <summary>
+            Initializes a new instance of the <see cref="T:BoldReports.Server.Services.Storage.Providers.S3StorageProvider"/> class
+            with the specified Amazon S3 settings.
+            </summary>
+            <param name="amazonS3Settings">The Amazon S3 settings.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetLastModifiedTime(System.String)">
+            <summary>
+            Gets the last modified time for the specified S3 object.
+            </summary>
+            <param name="blobName">The key or path of the S3 object.</param>
+            <returns>The last modified <see cref="T:System.DateTime"/> in UTC, or <see cref="F:System.DateTime.MinValue"/> if not found.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.UploadFrombyteArray(System.Byte[],System.String,System.DateTime)">
+            <summary>
+            Uploads the provided byte array to the configured S3 bucket at the specified key.
+            Optionally stores a metadata entry for the report time.
+            </summary>
+            <param name="value">The bytes to upload.</param>
+            <param name="blobName">The S3 key to upload to.</param>
+            <param name="reportTime">The report time to include in metadata (optional).</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.CreateObject(System.String)">
+            <summary>
+            Creates a folder marker (empty blob with trailing slash) in S3.
+            </summary>
+            <param name="folderPath">The folder path to create.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.DownloadToText(System.String)">
+            <summary>
+            Downloads the object identified by <paramref name="sourceBlobName"/> and returns its content as a string.
+            </summary>
+            <param name="sourceBlobName">The S3 key of the object to download.</param>
+            <returns>The object content as text, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.DownloadToStream(System.String)">
+            <summary>
+            Downloads the object identified by <paramref name="sourceBlobName"/> and returns its content as a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="sourceBlobName">The S3 key of the object to download.</param>
+            <returns>A <see cref="T:System.IO.Stream"/> with the object's data, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.UploadFromStream(System.IO.Stream,System.String)">
+            <summary>
+            Uploads the content of the specified stream to the object storage.
+            </summary>
+            <param name="stream">The stream containing the data to upload.</param>
+            <param name="destinationBlobName">The object key where the content will be stored.</param>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.DownloadToByteArray(System.String)">
+            <summary>
+            Downloads the object as a byte array.
+            </summary>
+            <param name="blobName">The S3 key of the object to download.</param>
+            <returns>The object content as a byte array, or <c>null</c> if not found or on error.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.DeleteBlobItem(System.String)">
+            <summary>
+            Deletes the specified object from the S3 bucket.
+            </summary>
+            <param name="blobPath">The S3 key of the object to delete.</param>
+            <returns><c>true</c> if deletion succeeded; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetBlobItems(System.String)">
+            <summary>
+            Gets a list of blob items under the specified prefix, including their names and last modified times.
+            </summary>
+            <param name="prefix">The prefix to filter objects.</param>
+            <returns>A list of <see cref="T:BoldReports.Server.Services.Storage.Abstractions.StorageItemInfo"/> objects.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetAppDataFolderPath">
+            <summary>
+            Gets the application data folder path for Amazon S3 storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetConfigJsonPath">
+            <summary>
+            Gets the configuration JSON path for Amazon S3 storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetProductJsonPath">
+            <summary>
+            Gets the product JSON path for Amazon S3 storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetReportingConfigPath">
+            <summary>
+            Gets the reporting configuration path for Amazon S3 storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetPrivateKeyPath">
+            <summary>
+            Gets the private key path for Amazon S3 storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.GetResourcePath">
+            <summary>
+            Gets the resource path for Amazon S3 storage.
+            </summary>
+        </member>
+        <member name="M:BoldReports.Server.Services.Storage.Providers.S3StorageProvider.IsAzureStorage">
+            <summary>
+            Determines whether this provider uses Azure Blob Storage.
+            </summary>
+            <returns><c>true</c> if using Azure storage; otherwise <c>false</c>.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.ServiceUtil.GetStorageDetails">
+            <summary>
+            Retrieves the storage details from the IDP API.
+            </summary>
+            <returns>The storage API response, or null if the request fails.</returns>
+        </member>
+        <member name="M:BoldReports.Server.Services.ServiceUtil.InvokeIdpApiRequest(System.String)">
+            <summary>
+            Invokes the IDP API with the specified URL.
+            </summary>
+            <param name="requestUrl">The full URL to request.</param>
+            <returns>The HTTP response message.</returns>
         </member>
         <member name="P:BoldReports.Server.Report.Model.ApiItemDetail.CanRead">
             <summary>
@@ -630,6 +1230,11 @@
         <member name="P:BoldReports.Server.Report.Model.ApiReportUpdate.Tags">
             <summary>
             Contains details about tags
+            </summary>
+        </member>
+        <member name="P:BoldReports.Server.Report.Model.ApiReportFont.FontName">
+            <summary>
+            Mapping information of DataSource
             </summary>
         </member>
         <member name="P:BoldReports.Server.Report.Model.ApiReportDataSourceUpdate.ItemId">

@@ -260,11 +260,14 @@ CREATE TABLE [BOLDTC_UserLogin] (
 	SessionId uniqueidentifier NULL,
 	DirectoryTypeId int not null,
 	ClientToken nvarchar(4000) NOT NULL,
+	EncryptedIdToken nvarchar(4000) NULL,
 	LoggedInDomain nvarchar(255) NOT NULL,
 	IpAddress nvarchar(255) NOT NULL,
 	Browser nvarchar(255) NULL,
+	IdTokenExpiresAt datetime NULL,
 	LoggedInTime datetime NOT NULL,
 	LastActive datetime NULL,
+	IsUsedForLogout bit NULL,
 	IsActive bit NOT NULL,
   CONSTRAINT [PK_BOLDTC_USERLOGIN] PRIMARY KEY CLUSTERED
   (
@@ -1760,3 +1763,17 @@ ALTER TABLE [BOLDTC_TenantSettings] CHECK CONSTRAINT [BOLDTC_TenantSettings_fk0]
 
 ALTER TABLE [BOLDTC_UserAttributes] ADD FOREIGN KEY([UserId]) REFERENCES [BOLDTC_User] ([Id])
 ;
+
+CREATE TABLE [BOLDTC_TokenVault] (
+		TenantId UNIQUEIDENTIFIER NOT NULL,
+		IdpUserId UNIQUEIDENTIFIER NOT NULL,
+		AuthUserId UNIQUEIDENTIFIER NOT NULL,
+		AuthProviderId INT NOT NULL,
+		EncryptedToken NVARCHAR(MAX) NOT NULL,
+		ExpiresAt DATETIMEOFFSET(7) NULL,
+		UpdatedAt DATETIMEOFFSET(7) NOT NULL DEFAULT SYSUTCDATETIME(),
+	CONSTRAINT [PK_BOLDTC_TokenVault] PRIMARY KEY CLUSTERED
+	(
+	[TenantId], [IdpUserId], [AuthProviderId]
+	) WITH (IGNORE_DUP_KEY = OFF)
+);

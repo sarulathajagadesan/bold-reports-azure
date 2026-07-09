@@ -1,31 +1,19 @@
-﻿-- BOLD_UPGRADE_RERUN_SAFE: true
--- BOLD_UPGRADE_IDEMPOTENT_VALIDATED: true
--- BOLD_UPGRADE_STATEMENT_SEPARATOR: $$
+CREATE TABLE {database_name}.BOLDTC_TokenVault (
+	TenantId CHAR(38) NOT NULL,
+	IdpUserId CHAR(38) NOT NULL,
+	AuthUserId CHAR(38) NOT NULL,
+	AuthProviderId INT NOT NULL,
+	EncryptedToken LONGTEXT NOT NULL,
+	ExpiresAt DATETIME(6) NULL,
+	UpdatedAt DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+	CONSTRAINT PK_BOLDTC_TokenVault PRIMARY KEY (TenantId, IdpUserId, AuthProviderId)
+) ROW_FORMAT=DYNAMIC
+;
 
-SET @boldid_column_count := (
-    SELECT COUNT(*)
-    FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_SCHEMA = DATABASE()
-      AND TABLE_NAME = 'BOLDTC_SystemSettings'
-      AND COLUMN_NAME = 'SystemValue'
-);
+ALTER TABLE {database_name}.BOLDTC_UserLogin ADD EncryptedIdToken nvarchar(4000) NULL;
 
-SET @boldid_column_valid := (
-    SELECT COUNT(*)
-    FROM INFORMATION_SCHEMA.COLUMNS
-    WHERE TABLE_SCHEMA = DATABASE()
-      AND TABLE_NAME = 'BOLDTC_SystemSettings'
-      AND COLUMN_NAME = 'SystemValue'
-      AND DATA_TYPE = 'longtext'
-);
+ALTER TABLE {database_name}.BOLDTC_UserLogin ADD IdTokenExpiresAt datetime NULL;
 
-SET @boldid_sql := IF(
-    @boldid_column_count = 1 AND @boldid_column_valid = 0,
-    'ALTER TABLE {database_name}.BOLDTC_SystemSettings MODIFY SystemValue LONGTEXT',
-    IF(@boldid_column_valid = 1, 'SELECT 1', 'CALL BOLD_UPGRADE_VALIDATION_FAILED()')
-);
+ALTER TABLE {database_name}.BOLDTC_UserLogin ADD IsUsedForLogout tinyint NULL;
 
-PREPARE boldid_stmt FROM @boldid_sql;
-EXECUTE boldid_stmt;
-DEALLOCATE PREPARE boldid_stmt;
-$$
+ALTER TABLE {database_name}.BOLDTC_SystemSettings MODIFY SystemValue LONGTEXT;

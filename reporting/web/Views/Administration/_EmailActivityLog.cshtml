@@ -56,7 +56,7 @@
     var dataManager = ej.DataManager({ url:"@Url.Action("GetEmailLogs", "Administration")", adaptor: new ej.UrlAdaptor() });
 
     dataManager.adaptor.beforeSend = function (dm, request) {
-        request.setRequestHeader('X-XSRF-TOKEN', extractXSRFTokenFromCookie());
+        request.setRequestHeader('X-BRS-XSRF-TOKEN', extractXSRFTokenFromCookie());
     };
     $("#emailActivityLogGrid").ejGrid({
         dataSource: dataManager,

@@ -42,16 +42,10 @@
 
 @section scripts {
     <script nonce="@Context.Items["ScriptNonce"]">
-        var applicationImageUrl = "content/images/@GlobalAppSettings.Branding/application";
-        serverApp.controller("adSettingsController",
-            [
-                "$scope", function ($scope) {
-                    $scope.regex =
-                        '^(?!(ftp|https?):\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-]+(\.[a-z]{2,6})?(:\d{1,5})?(\/[a-zA-Z0-9]+[a-zA-Z0-9]*(\.[a-z]{2,8})?)*?$';
-                    $scope.distinguishedNameRegex = /^(\w+[=]{1}[a-zA-Z0-9-_\s]+)([\,{1}]\w+[=]{1}[a-zA-Z0-9-_\s]+)*$/;
-                }
-            ]);
-
+        var applicationImageUrl = "content/images/@GlobalAppSettings.Branding/application";   
+        window.adSettingsScope = window.adSettingsScope || {};
+        window.adSettingsScope.regex = '^(?!(ftp|https?):\\/\\/)([a-zA-Z0-9-_]+\\.)*[a-zA-Z0-9][a-zA-Z0-9-]+(\\.[a-z]{2,6})?(:\\d{1,5})?(\\\/[a-zA-Z0-9]+[a-zA-Z0-9]*(\\.[a-z]{2,8})?)*?$';
+        window.adSettingsScope.distinguishedNameRegex = /^(\\w+[=]{1}[a-zA-Z0-9-_\\s]+)([\\,{1}]\\w+[=]{1}[a-zA-Z0-9-_\\s]+)*$/;
     </script>
 
     <script nonce="@Context.Items["ScriptNonce"]" type="text/javascript">

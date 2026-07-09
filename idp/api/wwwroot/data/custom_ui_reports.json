@@ -38,12 +38,18 @@
       },
       "Users": {
         "ShowMenu": true,
-        "Order": 7
+        "Order": 7,
+        "RestrictManageProfile": false
       },
       "Settings": {
         "ShowMenu": true,
         "Order": 8
       },
+      "UserImport": [
+        {
+          "HideAddUser": false
+        }
+      ],
       "CustomMenu": [
         {
           "Name": ""

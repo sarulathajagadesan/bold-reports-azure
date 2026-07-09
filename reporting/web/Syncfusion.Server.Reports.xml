@@ -95,7 +95,7 @@
              <param name="itemName"></param>
              <returns></returns>
         </member>
-        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.CopyItem(System.String,System.String,System.String,System.String,System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSetMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSourceMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.ReportMappingInfo},System.Boolean)">
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.CopyItem(System.String,System.String,System.String,System.String,System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSetMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSourceMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.ReportMappingInfo},System.Boolean,System.Boolean)">
              <summary>
             
              </summary>
@@ -105,14 +105,14 @@
              <param name="itemName"></param>
              <returns></returns>
         </member>
-        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.GetCategory(System.String)">
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.GetCategory(System.String,Syncfusion.Server.Base.DataClasses.PublishType)">
              <summary>
             
              </summary>
              <param name="tenantName"></param>
              <returns></returns>
         </member>
-        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.TenantCopy(System.Guid,System.Guid,System.String,System.String,System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSetMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.DataSourceMappingInfo},System.Collections.Generic.List{Syncfusion.Server.Base.DataClasses.CopySubReportMappingInfoV4},System.Boolean)">
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.TenantCopy(Syncfusion.Server.Base.DataClasses.PublishType,System.Guid,System.Guid,System.String,System.String,System.Boolean,System.String)">
              <summary>
             
              </summary>
@@ -122,13 +122,31 @@
              <param name="tenantName"></param>
              <returns></returns>
         </member>
-        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.CopyViewItem(System.String,System.String,System.String)">
-             <summary>
-            
-             </summary>
-             <param name="itemId"></param>
-             <param name="itemAction"></param>
-             <returns></returns>
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.CopyReportToTenants(Syncfusion.Server.Base.DataClasses.MultiTenantCopyRequest)">
+            <summary>
+            Copy a single report to multiple tenants.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.CopyReportsToTenants(Syncfusion.Server.Base.DataClasses.BulkMultiTenantCopyRequest)">
+            <summary>
+            Copy multiple reports to multiple tenants.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.CopyViewItem(Syncfusion.Server.Base.DataClasses.CopyViewItemRequest)">
+            <summary>
+            POST endpoint to load copy dialog for single or bulk copy operations
+            Accepts item IDs as a JSON object instead of query parameters (more reliable)
+            </summary>
+            <param name="request">Request containing ItemIds array and bulk flag</param>
+            <returns>Partial view with copy dialog form</returns>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.CopyViewItems(System.String,System.String,System.String)">
+            <summary>
+            GET endpoint for single item copy via query parameters (backward compatibility)
+            </summary>
+            <param name="itemId"></param>
+            <param name="itemAction"></param>
+            <returns></returns>
         </member>
         <member name="M:Syncfusion.Server.Reports.Controllers.Items.ItemsController.ChangeDataSource(System.String,System.String,System.String)">
              <summary>
@@ -295,7 +313,7 @@
              <param name="description"></param>
              <returns></returns>
         </member>
-        <member name="M:Syncfusion.Server.Reports.Controllers.CategoryController.AddCategoryToTenant(System.String,System.String,System.String,System.String,System.String)">
+        <member name="M:Syncfusion.Server.Reports.Controllers.CategoryController.AddCategoryToTenant(System.String,System.String,System.String,System.String,Syncfusion.Server.Base.DataClasses.PublishType)">
              <summary>
             
              </summary>
@@ -416,6 +434,13 @@
             Fetches the schema (column list) for the selected DataSource + Dataset combination
             by reading their file bytes, encoding as Base64, and calling the Designer API /v1.0/schema.
             Also stores the schema in session for use in subsequent partial view loads.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Controllers.SchedulerController.GetDatasetPreview(System.String,System.String)">
+            <summary>
+            Fetches the last 5 rows of data for the selected DataSource + Dataset combination
+            by calling DesignerServiceEndPoints.GetData and returning the trimmed result
+            suitable for direct binding to an ejGrid.
             </summary>
         </member>
         <member name="M:Syncfusion.Server.Reports.Controllers.SchedulerController.StoreDatasetSchema(System.String,System.String)">
@@ -637,6 +662,42 @@
             <param name="currentUserId">Current User Id</param>
             <param name="reportPartType">Type of sample report part</param>
             <returns>Status of operation</returns>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Models.ItemModel.MultiTenantCopyAsync(System.Guid,System.Collections.Generic.IList{Syncfusion.Server.Base.DataClasses.TenantCopyTarget},System.Boolean,System.Guid,System.Net.Http.IHttpClientFactory,Syncfusion.Server.Base.Models.IPublishManagement)">
+            <summary>
+            Copies a single report to one or more tenant destinations.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Models.ItemModel.ResolveCategoryPathAsync(System.String,Syncfusion.Server.Base.DataClasses.Token,Syncfusion.Server.Base.ReportServerApiEndPoints,Syncfusion.Server.Base.Models.PublishModuleApiEndPoints,System.String)">
+            <summary>
+            Resolves a slash-delimited category path (e.g. "test2/sub1/sub2") to a single leaf
+            category GUID in the destination tenant. Each level is looked up with the GetCategory
+            API (which supports a ServerPath query to return children at that path). If any
+            intermediate or leaf segment is missing, it is created with the correct ParentId so
+            that subsequent segments resolve correctly.
+            Returns Guid.Empty only if the caller passed an empty path or an unrecoverable error
+            occurs; in either case the caller should surface a clear error instead of proceeding.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Models.ItemModel.FetchCategoriesAtPathAsync(System.String,Syncfusion.Server.Base.DataClasses.Token,Syncfusion.Server.Base.Models.PublishModuleApiEndPoints)">
+            <summary>
+            Calls the GetCategory API with an optional ServerPath and returns the list of
+            categories at that path (root-level categories when path is empty, otherwise the
+            direct children of the category at that path). Returns an empty list on failure.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Models.ItemModel.CreateCategoryAsync(System.String,System.Guid,Syncfusion.Server.Base.DataClasses.Token,Syncfusion.Server.Base.Models.PublishModuleApiEndPoints,System.String)">
+            <summary>
+            Creates a single category with the given name under the specified parent (Guid.Empty
+            parent = root level). Returns the new category GUID or Guid.Empty on failure.
+            Duplicate-creation exceptions from the action filter are swallowed so the caller
+            can recover by re-fetching the list.
+            </summary>
+        </member>
+        <member name="M:Syncfusion.Server.Reports.Models.ItemModel.BulkMultiTenantCopyAsync(System.Collections.Generic.IList{System.Guid},System.Collections.Generic.IList{Syncfusion.Server.Base.DataClasses.TenantCopyTarget},System.String,System.Net.Http.IHttpClientFactory,Syncfusion.Server.Base.Models.IPublishManagement)">
+            <summary>
+            Copies multiple reports to one or more tenants, producing one result row per report×tenant.
+            </summary>
         </member>
         <member name="M:Syncfusion.Server.Reports.Models.ScheduleManagement.DisableSchedule(System.Guid)">
             <summary>

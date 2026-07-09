@@ -11,6 +11,7 @@ var skeletonCard;
 var onScroll= true;
 var innerCard;
 var fetchCard= false;
+var themeValue = (typeof theme !== 'undefined' && theme) ? theme : 'light';
 
 function getSafeImageFallbackUrl(url) {
     if (typeof url === "string" && url.trim() !== "" && url !== "undefined") {
@@ -593,13 +594,13 @@ function loadTenantCards(baseUrl, skip, take) {
                     var useCustomBranding = tenant.UseCustomBranding;
                     var brandingHtml = useCustomBranding
                         ? `<img id="icon-logo" class="icon-logo-container" alt="Site Logo" loading="lazy" src="@GlobalAppSettings.SystemSettings.LoginLogo">`
-                        : `<img id="icon-logo" class="icon-logo" alt="Site Logo" loading="lazy" src="${tenant.SiteUrl}/get-client-logo?logotype=login&theme=${theme}">`; 
+                        : `<img id="icon-logo" class="icon-logo" alt="Site Logo" loading="lazy" src="${tenant.SiteUrl}/get-client-logo?logotype=login&theme=${themeValue}">`; 
                     
                     var cardHtml = `<div class="tenant-card card">
                                            <div class="icon-container">${brandingHtml}</div>
                                                     <div class="tenant-card-header card-header">
                                                         <div class="card-header-title">${tenant.TenantName}</div>                                                        
-                                                         <div class="sites-card card-sub-title"> <a class="text-decoration-none site-link" href="javascript:void(0);" data-url="${tenant.SiteUrl}" data-toggle="tooltip" title="${tenant.SiteUrl}">${tenant.SiteUrl}</a></div>
+                                                         <div class="sites-card card-sub-title"> <a class="text-decoration-none site-link" href="${tenant.SiteUrl}" target="_blank" rel="noopener noreferrer" data-url="${tenant.SiteUrl}" data-toggle="tooltip" title="${tenant.SiteUrl}">${tenant.SiteUrl}</a></div>
                                                            <div class="data-card card-content"> ${tenant.CreatedDateString}</div>
                                                     </div> 
                                                       <div class="fav-card-icon"> ${favoriteButtonTemplate(tenant.IsFavorite, tenant.Id, tenant.UserId)}</div>
@@ -654,7 +655,7 @@ function loadFavoriteCards(baseUrl, skip, take) {
                     var useCustomBranding = tenant.UseCustomBranding;
                     var brandingHtml = useCustomBranding
                         ? `<img id="icon-logo" class="icon-logo-container"  alt="Site Logo" loading="lazy" src="@GlobalAppSettings.SystemSettings.LoginLogo">`
-                        : `<img id="icon-logo" class="icon-logo"  alt="Site Logo" loading="lazy" src="${tenant.SiteUrl}/get-client-logo?logotype=login&theme=${theme}">`;
+                        : `<img id="icon-logo" class="icon-logo"  alt="Site Logo" loading="lazy" src="${tenant.SiteUrl}/get-client-logo?logotype=login&theme=${themeValue}">`;
 
 
                     var cardHtml = `<div class="tenant-card card">

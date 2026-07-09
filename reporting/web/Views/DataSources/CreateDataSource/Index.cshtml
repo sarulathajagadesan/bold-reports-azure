@@ -144,7 +144,7 @@
         });
     </script>
 </head>
-<body class="cd" ng-app="createDataSourceApp">
+<body class="cd">
     <div id="designer" style="display:none !important"></div>
 
     <environment include="Development,CloudDevelopment">
@@ -155,12 +155,12 @@
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/extensions/extension.config.js"></script>
         <script nonce="@Context.Items["ScriptNonce"]" asp-append-version="true" src="@reportServerResourceUrl/extensions/custombranding.config.js"></script>
     </environment>
-    <div class="cd-container" ng-controller="createDataSourceCtrl">
+    <div class="cd-container">
         @{ await Html.RenderPartialAsync("~/Views/DataSources/CreateDataSource/_Header.cshtml"); }
-        <div class="cd-connector-list rs-scroller" ng-style="{'display': selectedDataConnector ? 'none' : 'block'}">
+        <div class="cd-connector-list rs-scroller" id="connectorListView" style="display: block;">
             @{ await Html.RenderPartialAsync("~/Views/DataSources/CreateDataSource/_ConnectorsList.cshtml"); }
         </div>
-        <div class="cd-connector" ng-if="selectedDataConnector">
+        <div class="cd-connector" id="connectorView" style="display: none;">
             @{ await Html.RenderPartialAsync("~/Views/DataSources/CreateDataSource/_Connector.cshtml"); }
         </div>
 
